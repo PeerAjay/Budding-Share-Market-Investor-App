@@ -23,7 +23,8 @@ COSC2408 Semester 1 2026 | VS666 | Budding Share Market Investor App
 
 ## Folder Structure 
 
-```backend/
+```
+backend/
 ├── pom.xml
 ├── src/main/java/com/shareapp/
 │   ├── config/                              # Setup and security
@@ -52,4 +53,5 @@ frontend/
 │   ├── App.js
 │   ├── index.css
 │   └── index.js
-└── package.json```
+└── package.json
+```
