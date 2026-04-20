@@ -1,5 +1,25 @@
-# COSC2408-budding-share-market-investor-app
+# COSC2408 Budding Share Market Investor App 
 COSC2408 Semester 1 2026 | VS666 | Budding Share Market Investor App 
+
+## About 
+- To do!
+
+## Members
+- Ajay Peeris: S4088958@student.rmit.edu.au
+- Devon Katsuk: S3844510@student.rmit.edu.au
+- Ninh Duy Huynh: S4003174@student.rmit.edu.au
+- Theresa Ngo: S3854837@student.rmit.edu.au
+- Zhoutong Chen: S4007490@student.rmit.edu.au
+
+## Tech Stack
+### Frontend 
+- React 
+### Backend
+- SpringBoot
+- Database: PostgreSQL
+
+## Installation 
+- To do! 
 
 ## Folder Structure 
 
