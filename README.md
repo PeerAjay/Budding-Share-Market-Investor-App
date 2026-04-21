@@ -19,7 +19,11 @@ COSC2408 Semester 1 2026 | VS666 | Budding Share Market Investor App
 - Database: PostgreSQL
 
 ## Installation 
-- To do! 
+- Install Node.js from the official Node.js download page. npm is installed with Node.js. For Windows, the easiest option is the official installer from the downloads page. https://nodejs.org/en/download
+- Open a terminal and go into the frontend folder: cd frontend
+- Install all frontend dependencies listed in package.json: npm install
+- Start the React app: npm run dev
+- Open the localhost link shown in the terminal
 
 ## Folder Structure 
 
