@@ -14,6 +14,7 @@ function NavigationBar({ onLogout }) {
       <h2 style={{ margin: 0 }}>Share Market App</h2>
 
       <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <Link to="/home">Home</Link>
         <Link to="/">Login</Link>
         <Link to="/register">Register</Link>
         <Link to="/dashboard">Dashboard</Link>

@@ -1,4 +1,5 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
+import Home from './pages/Home'
 import Login from './pages/Login'
 import Registration from './pages/Registration'
 import Dashboard from './pages/Dashboard'
@@ -36,6 +37,7 @@ function App() {
           path="/dashboard"
           element={<Dashboard onDashboardAction={handleDashboardAction} />}
         />
+        <Route path="/home" element={<Home />} />
       </Routes>
     </>
   )
