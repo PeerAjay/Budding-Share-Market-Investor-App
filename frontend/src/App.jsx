@@ -20,7 +20,7 @@ function App() {
     console.log('Logout function called')
   }
 
-  const hideNavbar = location.pathname === '/'
+  const hideNavbar = location.pathname === '/' || location.pathname === '/register'
 
   return (
     <>
