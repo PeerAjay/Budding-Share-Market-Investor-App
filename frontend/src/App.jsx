@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Login from './pages/Login'
 import Registration from './pages/Registration'
 import Dashboard from './pages/Dashboard'
@@ -6,6 +6,8 @@ import NavigationBar from './components/NavigationBar'
 import './App.css'
 
 function App() {
+  const location = useLocation()
+
   const handleRegister = () => {
     console.log('Register function called')
   }
@@ -18,9 +20,11 @@ function App() {
     console.log('Logout function called')
   }
 
+  const hideNavbar = location.pathname === '/'
+
   return (
     <>
-      <NavigationBar onLogout={handleLogout} />
+      {!hideNavbar && <NavigationBar onLogout={handleLogout} />}
 
       <Routes>
         <Route path="/" element={<Login />} />
