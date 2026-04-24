@@ -9,5 +9,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByEmail(String email);
 
-    User findbyId(Long id);
+    //TODO create SQL queries for more complex data operations if needed
+
 }
