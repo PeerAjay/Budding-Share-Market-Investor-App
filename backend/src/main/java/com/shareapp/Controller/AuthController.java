@@ -3,7 +3,9 @@ package com.shareapp.Controller;
 import com.shareapp.DataTransferObjects.JwtResponseDTO;
 import com.shareapp.DataTransferObjects.UserLoginDTO;
 import com.shareapp.DataTransferObjects.UserRegistrationDTO;
+import com.shareapp.DataTransferObjects.UserResponseDTO;
 import com.shareapp.Model.User;
+import jakarta.validation.Valid;
 import com.shareapp.Security.JwtUtils;
 import com.shareapp.Service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -32,10 +34,10 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody UserRegistrationDTO registrationDTO) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationDTO registrationDTO) {
         try {
             User registeredUser = userService.registerUser(registrationDTO);
-            return ResponseEntity.ok(registeredUser);
+            return ResponseEntity.ok(new UserResponseDTO(registeredUser.getId(), registeredUser.getUsername(), registeredUser.getEmail()));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
