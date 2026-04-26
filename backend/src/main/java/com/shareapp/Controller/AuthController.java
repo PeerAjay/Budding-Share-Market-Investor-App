@@ -1,13 +1,13 @@
-package com.shareapp.Controller;
+package com.shareapp.controller;
 
 import com.shareapp.DataTransferObjects.JwtResponseDTO;
 import com.shareapp.DataTransferObjects.UserLoginDTO;
 import com.shareapp.DataTransferObjects.UserRegistrationDTO;
 import com.shareapp.DataTransferObjects.UserResponseDTO;
-import com.shareapp.Model.User;
+import com.shareapp.model.User;
 import jakarta.validation.Valid;
 import com.shareapp.Security.JwtUtils;
-import com.shareapp.Service.UserService;
+import com.shareapp.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

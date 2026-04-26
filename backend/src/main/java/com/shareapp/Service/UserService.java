@@ -1,4 +1,4 @@
-package com.shareapp.Service;
+package com.shareapp.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.shareapp.Model.User;
-import com.shareapp.Repository.UserRepository;
+import com.shareapp.model.User;
+import com.shareapp.repository.UserRepository;
 import com.shareapp.DataTransferObjects.UserRegistrationDTO;
 
 
