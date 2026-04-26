@@ -107,3 +107,7 @@ frontend/
 │   └── index.js
 └── package.json
 ```
+
+## ERD Diagram
+<img width="787" height="703" alt="image" src="https://github.com/user-attachments/assets/ff4a3b92-00cd-416f-8feb-95639e5fee1f" />
+
