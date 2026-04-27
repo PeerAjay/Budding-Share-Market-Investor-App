@@ -18,12 +18,60 @@ COSC2408 Semester 1 2026 | VS666 | Budding Share Market Investor App
 - SpringBoot
 - Database: PostgreSQL
 
-## Installation 
-- Install Node.js from the official Node.js download page. npm is installed with Node.js. For Windows, the easiest option is the official installer from the downloads page. https://nodejs.org/en/download
-- Open a terminal and go into the frontend folder: cd frontend
-- Install all frontend dependencies listed in package.json: npm install
-- Start the React app: npm run dev
-- Open the localhost link shown in the terminal
+## Installation
+
+### Prerequisites
+- [Node.js](https://nodejs.org/en/download) (npm is included)
+- [Java 17+](https://adoptium.net/)
+- [Maven](https://maven.apache.org/install.html)
+- [PostgreSQL 18](https://www.postgresql.org/download/)
+
+### 1. Database Setup (PostgreSQL)
+
+**Install PostgreSQL 18**
+
+macOS (Homebrew):
+```
+brew install postgresql@18
+brew services start postgresql@18
+```
+
+Windows:
+- Download and run the installer from https://www.postgresql.org/download/windows/
+- During installation, set the superuser password when prompted
+- PostgreSQL will start automatically as a Windows service
+
+**Create the database and user**
+
+macOS — open a terminal:
+```
+psql postgres
+```
+
+Windows — open **SQL Shell (psql)** from the Start Menu and press Enter through the prompts until asked for a password, then enter the password you set during installation. Then run:
+
+```sql
+CREATE USER admin WITH PASSWORD 'test123' SUPERUSER CREATEDB;
+CREATE DATABASE budding_share_db OWNER admin;
+\q
+```
+
+The tables are created automatically when the backend starts for the first time.
+
+### 2. Backend
+```
+cd backend
+mvn spring-boot:run
+```
+Runs on `http://localhost:8080`.
+
+### 3. Frontend
+```
+cd frontend
+npm install
+npm run dev
+```
+Open the localhost link shown in the terminal.
 
 ## Folder Structure 
 
@@ -59,3 +107,7 @@ frontend/
 │   └── index.js
 └── package.json
 ```
+
+## ERD Diagram
+<img width="787" height="703" alt="image" src="https://github.com/user-attachments/assets/ff4a3b92-00cd-416f-8feb-95639e5fee1f" />
+

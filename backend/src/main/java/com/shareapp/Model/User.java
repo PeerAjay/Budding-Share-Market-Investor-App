@@ -1,6 +1,7 @@
-package com.shareapp.Model;
+package com.shareapp.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -8,10 +9,16 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String username;
     private String email;
     private String password;
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;
@@ -24,6 +31,9 @@ public class User {
     }
     public String getPassword() {
         return password;
+    }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public void setUsername(String username) {

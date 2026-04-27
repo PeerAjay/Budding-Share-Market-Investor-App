@@ -1,4 +1,4 @@
-//package com.shareapp.Controller;
+//package com.shareapp.controller;
 //
 //import com.shareapp.DataTransferObjects.UserRegistrationDTO;
 //import org.springframework.web.bind.annotation.RequestBody;

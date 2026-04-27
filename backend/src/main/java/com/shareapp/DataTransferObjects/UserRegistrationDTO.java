@@ -1,10 +1,14 @@
 package com.shareapp.DataTransferObjects;
 
-import java.util.List;
+import jakarta.validation.constraints.Email;
 
 public class UserRegistrationDTO {
     private String username;
+
+    @Email(message = "Email must be a valid email address")
     private String email;
+
+    // TODO: add password validation (e.g. minimum length, uppercase, special character requirements)
     private String password;
     private String confirmPassword;
 

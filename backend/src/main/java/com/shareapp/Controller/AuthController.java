@@ -1,11 +1,13 @@
-package com.shareapp.Controller;
+package com.shareapp.controller;
 
 import com.shareapp.DataTransferObjects.JwtResponseDTO;
 import com.shareapp.DataTransferObjects.UserLoginDTO;
 import com.shareapp.DataTransferObjects.UserRegistrationDTO;
-import com.shareapp.Model.User;
+import com.shareapp.DataTransferObjects.UserResponseDTO;
+import com.shareapp.model.User;
+import jakarta.validation.Valid;
 import com.shareapp.Security.JwtUtils;
-import com.shareapp.Service.UserService;
+import com.shareapp.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,10 +34,10 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody UserRegistrationDTO registrationDTO) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationDTO registrationDTO) {
         try {
             User registeredUser = userService.registerUser(registrationDTO);
-            return ResponseEntity.ok(registeredUser);
+            return ResponseEntity.ok(new UserResponseDTO(registeredUser.getId(), registeredUser.getUsername(), registeredUser.getEmail()));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -45,7 +47,7 @@ public class AuthController {
     public ResponseEntity<?> loginUser(@RequestBody UserLoginDTO loginDTO) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
+                    new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtUtils.generateJwtToken(authentication);
