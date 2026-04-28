@@ -58,6 +58,26 @@ CREATE DATABASE budding_share_db OWNER admin;
 
 The tables are created automatically when the backend starts for the first time.
 
+**Create the default admin account**
+
+After starting the backend, run this in a new terminal:
+```
+curl -X POST http://localhost:8080/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","email":"admin@shareapp.com","password":"Admin123!","confirmPassword":"Admin123!"}'
+```
+
+Then connect to the database and promote to admin:
+```
+psql -U admin -d budding_share_db
+```
+```sql
+UPDATE users SET role = 'ROLE_ADMIN' WHERE email = 'admin@shareapp.com';
+\q
+```
+
+Default admin credentials — `admin@shareapp.com` / `Admin123!`
+
 ### 2. Backend
 ```
 cd backend
