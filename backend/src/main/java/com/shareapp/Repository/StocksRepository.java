@@ -7,4 +7,6 @@ public interface StocksRepository extends JpaRepository<Stock, Long> {
     Stock findBySymbol(String symbol);
 
     boolean existsBySymbol(String symbol);
+
+    //TODO: Add more methods later if needed for things like filtering by company namek or price range, etc.
 }
