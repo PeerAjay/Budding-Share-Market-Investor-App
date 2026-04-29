@@ -8,7 +8,7 @@ import com.shareapp.model.User;
 
 @Entity
 @Table(name = "shares")
-public class Share {
+public class Holding {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
