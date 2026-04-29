@@ -1,11 +1,11 @@
-package com.shareapp.model;
+package com.shareapp.Model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "stocks")
-public class Stock {
+public class Stock implements java.io.Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

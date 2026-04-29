@@ -1,8 +1,8 @@
-package com.shareapp.controller;
+package com.shareapp.Controller;
 
 import com.shareapp.DataTransferObjects.TradingAccountRequestDTO;
 import com.shareapp.DataTransferObjects.TradingAccountResponseDTO;
-import com.shareapp.service.DashboardService;
+import com.shareapp.Service.DashboardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
