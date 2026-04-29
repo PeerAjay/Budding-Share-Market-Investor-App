@@ -5,17 +5,18 @@ import java.time.LocalDateTime;
 
 import com.shareapp.model.Stock;
 import com.shareapp.model.User;
+import com.shareapp.model.TradingAccount;
 
 @Entity
 @Table(name = "shares")
-public class Holding {
+public class Holding {  
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "account_id")
+    private TradingAccount account;
     private Stock stock;
     private int quantity;
     private LocalDateTime purchaseDate;
@@ -25,12 +26,12 @@ public class Holding {
         return id;
     }
 
-    public User getUser() {
-        return user;
+    public TradingAccount getAccount() {
+        return account;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setAccount(TradingAccount account) {
+        this.account = account;
     }
 
     public Stock getStock() {
