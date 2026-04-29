@@ -129,5 +129,5 @@ frontend/
 ```
 
 ## ERD Diagram
-<img width="787" height="703" alt="image" src="https://github.com/user-attachments/assets/ff4a3b92-00cd-416f-8feb-95639e5fee1f" />
+<img width="628" height="640" alt="image" src="https://github.com/user-attachments/assets/6f3556df-944f-4873-8038-2d62a7e77930" />
 
