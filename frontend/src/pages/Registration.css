@@ -1,0 +1,201 @@
+.register-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(34, 197, 94, 0.18), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.16), transparent 26%),
+    linear-gradient(135deg, #07111f 0%, #0b1628 48%, #0f172a 100%);
+  color: #ffffff;
+}
+
+.register-brand-side {
+  position: relative;
+  overflow: hidden;
+  padding: 4rem;
+  background: linear-gradient(160deg, rgba(9, 18, 35, 0.9), rgba(15, 23, 42, 0.96));
+}
+
+.register-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 25% 25%, rgba(34, 197, 94, 0.14), transparent 30%),
+    radial-gradient(circle at 80% 75%, rgba(59, 130, 246, 0.12), transparent 28%);
+  pointer-events: none;
+}
+
+.register-brand-content {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+  margin: auto 0;
+}
+
+.register-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #dcfce7;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.register-brand-title {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.08;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.register-brand-subtitle {
+  font-size: 1.06rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 510px;
+}
+
+.register-feature-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.register-feature-card {
+  padding: 1.2rem 1.25rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.register-feature-card h5 {
+  margin-bottom: 0.45rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.register-feature-card p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.96rem;
+  line-height: 1.6;
+}
+
+.register-form-side {
+  padding: 2rem;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 560px;
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 28px;
+  padding: 2.5rem;
+  color: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.register-small-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #16a34a;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.register-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: #0f172a;
+}
+
+.register-subtitle {
+  color: #64748b;
+  margin-bottom: 0;
+  line-height: 1.7;
+}
+
+.register-label {
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.55rem;
+}
+
+.register-input {
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  border: 1px solid #dbe2ea;
+  background: #f8fafc;
+  box-shadow: none;
+}
+
+.register-input:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 0.2rem rgba(34, 197, 94, 0.12);
+  background: #ffffff;
+}
+
+.register-check-text {
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.register-btn {
+  background: linear-gradient(135deg, #16a34a, #2563eb);
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  padding: 0.95rem 1rem;
+  font-weight: 700;
+  transition: 0.25s ease;
+}
+
+.register-btn:hover {
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.2);
+}
+
+.signin-text {
+  color: #64748b;
+}
+
+.signin-link {
+  color: #16a34a;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.signin-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 991.98px) {
+  .register-page {
+    display: flex;
+    align-items: center;
+  }
+
+  .register-form-side {
+    padding: 1.5rem;
+  }
+
+  .register-card {
+    max-width: 620px;
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .register-card {
+    border-radius: 22px;
+    padding: 1.5rem;
+  }
+
+  .register-title {
+    font-size: 1.7rem;
+  }
+}
