@@ -8,15 +8,13 @@ import java.time.LocalDateTime;
 public class Stock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long stock_id;
 
     private String symbol;
-    private String companyName;
-    private double currentPrice;
-    private LocalDateTime lastUpdated;
+    private String companyName; 
 
-    public Long getId() {
-        return id;
+    public Long getStock_id() {
+        return stock_id;
     }
 
     public String getSymbol() {
@@ -33,21 +31,5 @@ public class Stock {
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
-    }
-
-    public double getCurrentPrice() {
-        return currentPrice;
-    }
-
-    public void setCurrentPrice(double currentPrice) {
-        this.currentPrice = currentPrice;
-    }
-
-    public LocalDateTime getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(LocalDateTime lastUpdated) {
-        this.lastUpdated = lastUpdated;
     }
 }
