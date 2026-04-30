@@ -18,10 +18,18 @@ public class StockPriceHistory {
     private Double price;
     private LocalDateTime timestamp;
 
+    public StockPriceHistory() {}
+
+    public StockPriceHistory(Stock stock, Double price, LocalDateTime timestamp) {
+        this.stock = stock;
+        this.price = price;
+        this.timestamp = timestamp;
+    }
+
     public Long getId() {
         return id;
     }
-    
+
     public Stock getStock() {
         return stock;
     }

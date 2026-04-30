@@ -13,6 +13,13 @@ public class Stock {
     private String symbol;
     private String companyName; 
 
+    public Stock() {}
+
+    public Stock(String symbol, String companyName) {
+        this.symbol = symbol;
+        this.companyName = companyName;
+    }
+
     public Long getStock_id() {
         return stock_id;
     }
