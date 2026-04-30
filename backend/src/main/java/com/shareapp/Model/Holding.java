@@ -17,6 +17,8 @@ public class Holding {
     @ManyToOne
     @JoinColumn(name = "account_id")
     private TradingAccount account;
+    @ManyToOne
+    @JoinColumn(name = "stock_id")
     private Stock stock;
     private int quantity;
     private LocalDateTime purchaseDate;
