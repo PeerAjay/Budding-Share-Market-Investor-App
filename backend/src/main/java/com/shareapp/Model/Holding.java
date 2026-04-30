@@ -21,8 +21,16 @@ public class Holding {
     @JoinColumn(name = "stock_id")
     private Stock stock;
     private int quantity;
-    private LocalDateTime purchaseDate;
     private Double buyPrice;
+
+    public Holding() {}
+
+    public Holding(TradingAccount account, Stock stock, int quantity, Double price) {
+        this.account = account;
+        this.stock = stock;
+        this.quantity = quantity;
+        this.buyPrice = price;
+    }
 
     public Long getId() {
         return id;
@@ -46,11 +54,7 @@ public class Holding {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-    }   
-
-    public LocalDateTime getPurchaseDate() {
-        return purchaseDate;
-    }
+    } 
 
     public Double getBuyPrice() {
         return buyPrice;

@@ -27,6 +27,18 @@ public class Transaction {
     private Double total_value;
     private LocalDateTime timestamp;
 
+    public Transaction() {}
+
+    public Transaction(TradingAccount account, Stock stock, int quantity, Double price_at_transaction, double brokerage_fee) {
+        this.account = account;
+        this.stock = stock;
+        this.quantity = quantity;
+        this.price_at_transaction = price_at_transaction;
+        this.brokerage_fee = brokerage_fee;
+        this.total_value = quantity * price_at_transaction + brokerage_fee;
+        this.timestamp = LocalDateTime.now();
+    }
+
     public Long getId() {
         return id;
     }
