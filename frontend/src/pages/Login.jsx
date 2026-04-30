@@ -1,7 +1,44 @@
-import { Link } from "react-router-dom";
-import "./Login.css";
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../services/AuthContext'
+import './Login.css'
 
 function Login() {
+  const navigate = useNavigate()
+  const { login } = useAuth()
+
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  })
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+
+    try {
+      await login(formData.email, formData.password)
+      navigate('/dashboard')
+    } catch (err) {
+      setError(
+        err?.response?.data || 'Login failed. Please check your credentials.'
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="login-page">
       <div className="container-fluid min-vh-100">
@@ -60,15 +97,19 @@ function Login() {
                 </p>
               </div>
 
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label className="form-label custom-label">
                     Email address
                   </label>
                   <input
                     type="email"
+                    name="email"
                     className="form-control custom-input"
                     placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
                   />
                 </div>
 
@@ -76,10 +117,20 @@ function Login() {
                   <label className="form-label custom-label">Password</label>
                   <input
                     type="password"
+                    name="password"
                     className="form-control custom-input"
                     placeholder="Enter your password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
                   />
                 </div>
+
+                {error && (
+                  <div className="alert alert-danger py-2" role="alert">
+                    {error}
+                  </div>
+                )}
 
                 <div className="d-flex justify-content-between align-items-center mb-4">
                   <div className="form-check">
@@ -101,8 +152,12 @@ function Login() {
                   </button>
                 </div>
 
-                <button type="button" className="btn login-btn w-100 mb-3">
-                  Sign In
+                <button
+                  type="submit"
+                  className="btn login-btn w-100 mb-3"
+                  disabled={loading}
+                >
+                  {loading ? 'Signing In...' : 'Sign In'}
                 </button>
 
                 <button type="button" className="btn guest-btn w-100 mb-4">
@@ -115,7 +170,7 @@ function Login() {
               </div>
 
               <p className="register-text text-center mt-4 mb-0">
-                Don&apos;t have an account?{" "}
+                Don&apos;t have an account?{' '}
                 <Link to="/register" className="register-link">
                   Create one
                 </Link>
@@ -125,7 +180,7 @@ function Login() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default Login;
+export default Login

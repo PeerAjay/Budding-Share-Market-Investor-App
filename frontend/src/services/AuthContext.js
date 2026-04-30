@@ -1,38 +1,41 @@
-import { createContext, useContext, useState } from 'react';
-import api from './api';
+import { createContext, useContext, useState } from 'react'
+import api from './api'
 
-const AuthContext = createContext(null);
+const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-    const [user, setUser] = useState(() => {
-        const token = localStorage.getItem('token');
-        const email = localStorage.getItem('email');
-        return token ? { token, email } : null;
-    });
+  const [user, setUser] = useState(() => {
+    const token = localStorage.getItem('token')
+    const identity = localStorage.getItem('identity')
+    return token ? { token, identity } : null
+  })
 
-    const login = async (email, password) => {
-        const response = await api.post('/auth/login', { email, password });
-        const { token, username } = response.data;
-        localStorage.setItem('token', token);
-        localStorage.setItem('email', username);
-        setUser({ token, email: username });
-    };
+  const login = async (email, password) => {
+    const response = await api.post('/auth/login', { email, password })
+    const { token, username } = response.data
 
-    const logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('email');
-        setUser(null);
-    };
+    localStorage.setItem('token', token)
+    localStorage.setItem('identity', username)
 
-    return (
-        <AuthContext.Provider value={{ user, login, logout }}>
-            {children}
-        </AuthContext.Provider>
-    );
+    setUser({ token, identity: username })
+    return response.data
+  }
+
+  const logout = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('identity')
+    setUser(null)
+  }
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export function useAuth() {
-    return useContext(AuthContext);
+  return useContext(AuthContext)
 }
 
-export default AuthContext;
+export default AuthContext
