@@ -26,7 +26,7 @@ function Home() {
 
                 <section className="home-visual-panel">
                     <div className="home-market-preview-card">
-                        <img src={stockPreview} alt="Stock market dashboard preview" className="home-market-preview-image"/>
+                        <img src={stockPreview} alt="Stock market dashboard preview" className="home-market-preview-image" />
                     </div>
                 </section>
             </div>

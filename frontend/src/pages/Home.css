@@ -26,15 +26,15 @@
 
 .home-hero-badge {
     display: inline-block;
-    margin-bottom: 1.4rem;
-    padding: 0.46rem 0.9rem;
+    padding: 0.6rem 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: 999px;
-    border: 1px solid rgba(99, 141, 255, 0.38);
-    background: rgba(79, 70, 229, 0.2);
-    color: #c9dcff;
-    font-size: 0.82rem;
-    font-weight: 700;
+    background: rgba(255, 255, 255, 0.08);
+    color: #dbeafe;
+    font-size: 1.05rem;
+    font-weight: 600;
     letter-spacing: 0.02em;
+    margin-bottom: 1.5rem;
 }
 
 .home-hero-title {
