@@ -1,9 +1,8 @@
-function Dashboard({ onDashboardAction }) {
+function Dashboard() {
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Dashboard Page</h1>
-      <p>Placeholder page for now.</p>
-      <button onClick={onDashboardAction}>Call Dashboard Function</button>
+    <div className="container py-5">
+      <h1>Dashboard</h1>
+      <p>Welcome to your trading dashboard.</p>
     </div>
   )
 }

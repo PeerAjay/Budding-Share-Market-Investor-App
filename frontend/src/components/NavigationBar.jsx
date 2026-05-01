@@ -1,24 +1,33 @@
 import { Link } from 'react-router-dom'
+import './NavigationBar.css'
 
-function NavigationBar({ onLogout }) {
+function NavigationBar({ user, onLogout }) {
   return (
-    <nav
-      style={{
-        padding: '1rem 2rem',
-        borderBottom: '1px solid #ccc',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}
-    >
-      <h2 style={{ margin: 0 }}>Share Market App</h2>
+    <nav className="app-navbar">
+      <div className="app-navbar__left">
+        <Link to="/dashboard" className="app-navbar__brand">
+          Share Market App
+        </Link>
+      </div>
 
-      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-        <Link to="/home">Home</Link>
-        <Link to="/">Login</Link>
-        <Link to="/register">Register</Link>
-        <Link to="/dashboard">Dashboard</Link>
-        <button onClick={onLogout}>Logout</button>
+      <div className="app-navbar__right">
+        <Link to="/dashboard" className="app-navbar__link">
+          Dashboard
+        </Link>
+
+        <Link to="/profile" className="app-navbar__link">
+          Profile
+        </Link>
+
+        <div className="app-navbar__user">
+          <span className="app-navbar__user-label">
+            {user?.identity || 'User'}
+          </span>
+        </div>
+
+        <button className="app-navbar__logout" onClick={onLogout}>
+          Logout
+        </button>
       </div>
     </nav>
   )

@@ -3,6 +3,7 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Registration from './pages/Registration'
 import Dashboard from './pages/Dashboard'
+import Profile from './pages/Profile'
 import NavigationBar from './components/NavigationBar'
 import { useAuth } from './services/AuthContext'
 import './App.css'
@@ -17,11 +18,11 @@ function App() {
   const { user, logout } = useAuth()
 
   const hideNavbar =
-    location.pathname === '/' || location.pathname === '/register'
+    !user || location.pathname === '/' || location.pathname === '/register'
 
   return (
     <>
-      {!hideNavbar && <NavigationBar onLogout={logout} />}
+      {!hideNavbar && <NavigationBar user={user} onLogout={logout} />}
 
       <Routes>
         <Route
@@ -37,6 +38,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />
