@@ -17,6 +17,8 @@ import com.shareapp.model.StockPriceHistory;
 import com.shareapp.repository.StockPriceHistoryRepository;
 import com.shareapp.model.Transaction;
 import com.shareapp.repository.TransactionRepository;
+import com.shareapp.DataTransferObjects.TransactionResponseDTO;
+
 
 @Service
 public class TransactionService {
@@ -43,7 +45,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public void buyShare(Long accountId, String stockSymbol, int quantity) {
+    public TransactionResponseDTO buyShare(Long accountId, String stockSymbol, int quantity) {
         TradingAccount account = tradingAccountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
         Stock stock = stocksRepository.findBySymbol(stockSymbol);
         if (stock == null) {
@@ -81,5 +83,6 @@ public class TransactionService {
         //Save the account
         tradingAccountRepository.save(account);
 
-    }
+        return new TransactionResponseDTO("Stock purchased successfully", account.getBalance());
+    }   
 }
