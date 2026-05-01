@@ -21,7 +21,7 @@ public class Holding {
     @JoinColumn(name = "stock_id")
     private Stock stock;
     private int quantity;
-    private Double buyPrice;
+    private Double averageBuyPrice;
 
     public Holding() {}
 
@@ -29,7 +29,7 @@ public class Holding {
         this.account = account;
         this.stock = stock;
         this.quantity = quantity;
-        this.buyPrice = price;
+        this.averageBuyPrice = price;
     }
 
     public Long getId() {
@@ -56,8 +56,12 @@ public class Holding {
         this.quantity = quantity;
     } 
 
-    public Double getBuyPrice() {
-        return buyPrice;
+    public Double getAverageBuyPrice() {
+        return averageBuyPrice;
+    }
+
+    public void setAverageBuyPrice(Double averageBuyPrice) {
+        this.averageBuyPrice = averageBuyPrice;
     }
 
 }

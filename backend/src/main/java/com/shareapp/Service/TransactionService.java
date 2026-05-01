@@ -43,7 +43,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public void buyStock(Long accountId, String stockSymbol, int quantity) {
+    public void buyShare(Long accountId, String stockSymbol, int quantity) {
         TradingAccount account = tradingAccountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
         Stock stock = stocksRepository.findBySymbol(stockSymbol);
         if (stock == null) {
@@ -68,15 +68,18 @@ public class TransactionService {
             holding = new Holding(account, stock, quantity, latestPrice.getPrice());
         } 
         else {
-             // TODO: HANDLE THIS CASE
-        }
-
+            holding.setAverageBuyPrice((holding.getAverageBuyPrice() * holding.getQuantity() + latestPrice.getPrice() * quantity) / (holding.getQuantity() + quantity));
+            holding.setQuantity(holding.getQuantity() + quantity);
+        }   
 
         // Add the holding
         holdingRepository.save(holding);
 
         // Add the Transaction
         transactionRepository.save(new Transaction(account, stock, quantity, latestPrice.getPrice(), BROKERAGE_FEE));
+
+        //Save the account
+        tradingAccountRepository.save(account);
 
     }
 }
