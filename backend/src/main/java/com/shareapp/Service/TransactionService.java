@@ -77,12 +77,47 @@ public class TransactionService {
         // Add the holding
         holdingRepository.save(holding);
 
-        // Add the Transaction
-        transactionRepository.save(new Transaction(account, stock, quantity, latestPrice.getPrice(), BROKERAGE_FEE));
+        // Add the BUY Transaction
+        transactionRepository.save(new Transaction("BUY", account, stock, quantity, latestPrice.getPrice(), BROKERAGE_FEE));
 
         //Save the account
         tradingAccountRepository.save(account);
 
         return new TransactionResponseDTO("Stock purchased successfully", account.getBalance());
-    }   
+    }
+
+    @Transactional
+    public void sellShare(Long accountId, String stockSymbol, int quantity) {
+        TradingAccount account = tradingAccountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
+        Stock stock = stocksRepository.findBySymbol(stockSymbol);
+        if (stock == null) {
+            throw new RuntimeException("Stock not found");
+        }
+        Holding holding = holdingRepository.findByTradingAccountAndStock(account, stocksRepository.findBySymbol(stockSymbol));
+
+        //Getting the latest price of the stock
+        StockPriceHistory latestPrice = stocksPriceHistoryRepository.findTopByStockSymbolOrderByTimestampDesc(stock.getSymbol());
+
+        if(holding == null || holding.getQuantity() < quantity) {
+            throw new RuntimeException("Not enough shares to sell");
+        }
+
+        //Adding the funds from selling back intot he account, minus the brokerage fee
+        account.setBalance(account.getBalance().add(new java.math.BigDecimal(quantity * latestPrice.getPrice() - BROKERAGE_FEE)));
+
+        //Deleitng the holding object if all the shares are sold, if theres some left then update the quantity and save
+        if (holding.getQuantity() == quantity) {
+            holdingRepository.delete(holding);
+        } else {
+            holding.setQuantity(holding.getQuantity() - quantity);
+            holdingRepository.save(holding);
+        }
+
+        //Adding the SELL transaction
+        transactionRepository.save(new Transaction("SELL", account, stock, quantity, latestPrice.getPrice(), BROKERAGE_FEE));
+
+        tradingAccountRepository.save(account);
+    }
+    
+
 }
