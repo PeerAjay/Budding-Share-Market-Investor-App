@@ -31,6 +31,15 @@ public class TransactionController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
 
+    @PostMapping("/sell")
+    public ResponseEntity<?> sellShare(@Valid @RequestBody TransactionDTO transactionDTO) {
+        try {
+            TransactionResponseDTO response = transactionService.sellShare(transactionDTO.getAccountId(), transactionDTO.getStockSymbol(), transactionDTO.getQuantity());
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

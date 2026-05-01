@@ -80,14 +80,14 @@ public class TransactionService {
         // Add the BUY Transaction
         transactionRepository.save(new Transaction("BUY", account, stock, quantity, latestPrice.getPrice(), BROKERAGE_FEE));
 
-        //Save the account
+        //Saving the account
         tradingAccountRepository.save(account);
 
         return new TransactionResponseDTO("Stock purchased successfully", account.getBalance());
     }
 
     @Transactional
-    public void sellShare(Long accountId, String stockSymbol, int quantity) {
+    public TransactionResponseDTO sellShare(Long accountId, String stockSymbol, int quantity) {
         TradingAccount account = tradingAccountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
         Stock stock = stocksRepository.findBySymbol(stockSymbol);
         if (stock == null) {
@@ -116,7 +116,9 @@ public class TransactionService {
         //Adding the SELL transaction
         transactionRepository.save(new Transaction("SELL", account, stock, quantity, latestPrice.getPrice(), BROKERAGE_FEE));
 
+        //Saving the account
         tradingAccountRepository.save(account);
+        return new TransactionResponseDTO("Stock sold successfully", account.getBalance());
     }
     
 
