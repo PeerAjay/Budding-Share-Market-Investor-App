@@ -64,7 +64,7 @@ public class TransactionService {
         // Deduct the cost from the account balance
         account.setBalance(account.getBalance().subtract(new java.math.BigDecimal(totalCost)));
 
-        Holding holding = holdingRepository.findByTradingAccountAndStock(account, stock);
+        Holding holding = holdingRepository.findByAccountAndStock(account, stock);
 
         if (holding == null) {
             holding = new Holding(account, stock, quantity, latestPrice.getPrice());
@@ -93,7 +93,7 @@ public class TransactionService {
         if (stock == null) {
             throw new RuntimeException("Stock not found");
         }
-        Holding holding = holdingRepository.findByTradingAccountAndStock(account, stocksRepository.findBySymbol(stockSymbol));
+        Holding holding = holdingRepository.findByAccountAndStock(account, stock);
 
         //Getting the latest price of the stock
         StockPriceHistory latestPrice = stocksPriceHistoryRepository.findTopByStockSymbolOrderByTimestampDesc(stock.getSymbol());
