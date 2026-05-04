@@ -17,6 +17,7 @@ COSC2408 Semester 1 2026 | VS666 | Budding Share Market Investor App
 ### Backend
 - SpringBoot
 - Database: PostgreSQL
+- Stock price data: [Twelve Data API](https://twelvedata.com)
 
 ## Installation
 
@@ -79,6 +80,29 @@ UPDATE users SET role = 'ROLE_ADMIN' WHERE email = 'admin@shareapp.com';
 Default admin credentials — `admin@shareapp.com` / `Admin123!`
 
 ### 2. Backend
+
+**Set up environment variables**
+
+The backend requires a [Twelve Data](https://twelvedata.com) API key for live stock prices. Get a free API key from their website, then set it in your terminal before starting the backend.
+
+macOS:
+```
+export TWELVEDATA_API_KEY=your_api_key_here
+```
+
+Windows (Command Prompt):
+```
+set TWELVEDATA_API_KEY=your_api_key_here
+```
+
+Windows (PowerShell):
+```
+$env:TWELVEDATA_API_KEY="your_api_key_here"
+```
+
+> This must be set every time you open a new terminal. To avoid this, add it to your shell profile (`~/.zshrc` on macOS) or Windows environment variables in System Settings.
+
+**Start the backend**
 ```
 cd backend
 mvn spring-boot:run
