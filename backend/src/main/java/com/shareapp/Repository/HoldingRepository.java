@@ -7,5 +7,5 @@ import com.shareapp.model.TradingAccount;
 
 public interface HoldingRepository extends JpaRepository<Holding, Long> {
     Holding findByAccountAndStock(TradingAccount account, Stock stock);
-
+    java.util.List<Holding> findAllByAccount(TradingAccount account);
 }
