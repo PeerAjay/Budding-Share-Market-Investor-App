@@ -22,7 +22,7 @@ public class DummyData implements CommandLineRunner{
     @Override
     public void run(String... args) throws Exception {
 
-        if(stocksRepository.count() > 0) {
+        if(stocksRepository.count() == 0) {
             // Adding some dummy stocks
             stocksRepository.save(new Stock("XJO", "ASX 200"));
             stocksPriceHistoryRepository.save(new StockPriceHistory(stocksRepository.findBySymbol("XJO"), 7000.0, LocalDateTime.now().minusDays(1)));

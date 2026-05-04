@@ -26,10 +26,14 @@ public class DashboardController {
     }
 
     @PostMapping("/accounts")
-    public ResponseEntity<TradingAccountResponseDTO> openTradingAccount(
+    public ResponseEntity<?> openTradingAccount(
             Authentication authentication,
             @RequestBody TradingAccountRequestDTO requestDTO) {
-        String email = authentication.getName();
-        return ResponseEntity.ok(dashboardService.openTradingAccount(email, requestDTO));
+        try {
+            String email = authentication.getName();
+            return ResponseEntity.ok(dashboardService.openTradingAccount(email, requestDTO));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
