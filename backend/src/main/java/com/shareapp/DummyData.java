@@ -24,13 +24,13 @@ public class DummyData implements CommandLineRunner{
 
         if(stocksRepository.count() == 0) {
             // Adding some dummy stocks
-            stocksRepository.save(new Stock("XJO", "ASX 200"));
+            stocksRepository.save(new Stock("XJO", "ASX 200", 7000.0));
             stocksPriceHistoryRepository.save(new StockPriceHistory(stocksRepository.findBySymbol("XJO"), 7000.0, LocalDateTime.now().minusDays(1)));
 
-            stocksRepository.save(new Stock("CBA",  "COMMONWEALTH BANK OF AUSTRALIA"));
+            stocksRepository.save(new Stock("CBA", "COMMONWEALTH BANK OF AUSTRALIA", 100.0));
             stocksPriceHistoryRepository.save(new StockPriceHistory(stocksRepository.findBySymbol("CBA"), 100.0, LocalDateTime.now().minusDays(1)));
 
-            stocksRepository.save(new Stock("BHP", "BHB GROUP LIMITED   "));
+            stocksRepository.save(new Stock("BHP", "BHB GROUP LIMITED", 150.0));
             stocksPriceHistoryRepository.save(new StockPriceHistory(stocksRepository.findBySymbol("BHP"), 150.0, LocalDateTime.now().minusDays(1)));
         }
         
