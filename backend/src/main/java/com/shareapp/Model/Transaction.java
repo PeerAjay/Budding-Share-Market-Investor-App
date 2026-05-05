@@ -29,7 +29,8 @@ public class Transaction {
 
     public Transaction() {}
 
-    public Transaction(TradingAccount account, Stock stock, int quantity, Double price_at_transaction, double brokerage_fee) {
+    public Transaction(String type, TradingAccount account, Stock stock, int quantity, Double price_at_transaction, double brokerage_fee) {
+        this.type = type;
         this.account = account;
         this.stock = stock;
         this.quantity = quantity;

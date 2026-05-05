@@ -38,6 +38,9 @@ public class DashboardService {
     @Transactional
     public TradingAccountResponseDTO openTradingAccount(String email, TradingAccountRequestDTO requestDTO) {
         User user = userRepository.findByEmail(email);
+        if (!tradingAccountRepository.findByUser(user).isEmpty()) {
+            throw new RuntimeException("User already has a trading account");
+        }
         TradingAccount account = new TradingAccount();
         account.setAccountName(requestDTO.getAccountName());
         account.setUser(user);
