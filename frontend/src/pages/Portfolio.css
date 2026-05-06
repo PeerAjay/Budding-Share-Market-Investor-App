@@ -83,7 +83,7 @@
 }
 
 .summary-note {
-  color: #16a34a;
+  color: #64748b;
   font-size: 0.92rem;
   font-weight: 700;
 }
@@ -109,31 +109,45 @@
   line-height: 1.6;
 }
 
-.portfolio-btn {
-  border: none;
+.portfolio-label {
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.5rem;
+}
+
+.portfolio-select {
   border-radius: 14px;
-  padding: 0.85rem 1rem;
-  background: linear-gradient(135deg, #4f46e5, #2563eb);
-  color: #ffffff;
-  font-weight: 700;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.portfolio-btn:hover {
-  color: #ffffff;
-  transform: translateY(-1px);
-  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
-}
-
-.portfolio-btn--secondary {
-  background: #eef2ff;
-  color: #312e81;
-}
-
-.portfolio-btn--secondary:hover {
-  background: #e0e7ff;
-  color: #312e81;
+  padding: 0.8rem 1rem;
+  border: 1px solid #dbe2ea;
+  background: #f8fafc;
   box-shadow: none;
+}
+
+.portfolio-select:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.12);
+}
+
+.account-picker-card {
+  overflow: hidden;
+}
+
+.account-meta {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 0.95rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+.account-meta span {
+  color: #64748b;
+}
+
+.account-meta strong {
+  color: #0f172a;
 }
 
 .portfolio-table thead th {
@@ -196,16 +210,49 @@
   font-size: 0.92rem;
 }
 
-.portfolio-actions {
-  display: grid;
-  gap: 0.9rem;
-}
-
 .portfolio-insights {
   margin: 0;
   padding-left: 1.2rem;
   color: #475569;
   line-height: 1.9;
+}
+
+.empty-state-card,
+.empty-holdings-state {
+  text-align: center;
+}
+
+.empty-holdings-state {
+  padding: 2rem 1rem;
+  background: #f8fafc;
+  border-radius: 18px;
+}
+
+.empty-holdings-state h4 {
+  color: #0f172a;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.empty-holdings-state p {
+  color: #64748b;
+  margin: 0;
+}
+
+.portfolio-btn {
+  border: none;
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
+  color: #ffffff;
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.portfolio-btn:hover {
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
 }
 
 @media (max-width: 992px) {

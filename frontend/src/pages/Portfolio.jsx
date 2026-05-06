@@ -1,53 +1,111 @@
+import { useEffect, useMemo, useState } from 'react'
+import api from '../services/api'
 import './Portfolio.css'
 
 function Portfolio() {
   const identity = localStorage.getItem('identity') || 'Investor'
 
-  const summaryCards = [
-    { title: 'Total Portfolio Value', value: '$1,245,320', note: '+24.53%' },
-    { title: 'Total Invested', value: '$1,000,000', note: 'Initial capital' },
-    { title: 'Unrealised Profit/Loss', value: '+$245,320', note: 'Across holdings' },
-    { title: 'Cash Available', value: '$126,540', note: 'Ready to trade' }
-  ]
+  const [accounts, setAccounts] = useState([])
+  const [selectedAccountId, setSelectedAccountId] = useState('')
+  const [holdings, setHoldings] = useState([])
+  const [accountsLoading, setAccountsLoading] = useState(true)
+  const [holdingsLoading, setHoldingsLoading] = useState(false)
+  const [openingAccount, setOpeningAccount] = useState(false)
+  const [error, setError] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
-  const holdings = [
-    {
-      symbol: 'BHP',
-      company: 'BHP Group',
-      shares: 120,
-      avgPrice: '$41.20',
-      currentPrice: '$45.12',
-      marketValue: '$5,414.40',
-      gainLoss: '+$470.40'
-    },
-    {
-      symbol: 'CBA',
-      company: 'Commonwealth Bank',
-      shares: 40,
-      avgPrice: '$110.10',
-      currentPrice: '$118.45',
-      marketValue: '$4,738.00',
-      gainLoss: '+$334.00'
-    },
-    {
-      symbol: 'TLS',
-      company: 'Telstra Group',
-      shares: 500,
-      avgPrice: '$3.60',
-      currentPrice: '$3.94',
-      marketValue: '$1,970.00',
-      gainLoss: '+$170.00'
-    },
-    {
-      symbol: 'WES',
-      company: 'Wesfarmers',
-      shares: 35,
-      avgPrice: '$63.20',
-      currentPrice: '$67.28',
-      marketValue: '$2,354.80',
-      gainLoss: '+$142.80'
+  useEffect(() => {
+    fetchAccounts()
+  }, [])
+
+  useEffect(() => {
+    if (selectedAccountId) {
+      fetchHoldings(selectedAccountId)
+    } else {
+      setHoldings([])
     }
-  ]
+  }, [selectedAccountId])
+
+  const fetchAccounts = async () => {
+    setAccountsLoading(true)
+    setError('')
+
+    try {
+      const response = await api.get('/dashboard/accounts')
+      const accountList = response.data || []
+
+      setAccounts(accountList)
+
+      if (accountList.length > 0) {
+        setSelectedAccountId(String(accountList[0].id))
+      }
+    } catch (err) {
+      setError(err?.response?.data || 'Failed to load trading accounts.')
+    } finally {
+      setAccountsLoading(false)
+    }
+  }
+
+  const fetchHoldings = async (accountId) => {
+    setHoldingsLoading(true)
+    setError('')
+
+    try {
+      const response = await api.get(`/portfolio/${accountId}/holdings`)
+      setHoldings(response.data || [])
+    } catch (err) {
+      setError(err?.response?.data || 'Failed to load holdings.')
+    } finally {
+      setHoldingsLoading(false)
+    }
+  }
+
+  const handleCreateAccount = async () => {
+    setOpeningAccount(true)
+    setError('')
+    setSuccessMessage('')
+
+    try {
+      await api.post('/dashboard/accounts', {
+        accountName: 'Main Trading Account'
+      })
+
+      setSuccessMessage('Trading account created successfully.')
+      await fetchAccounts()
+    } catch (err) {
+      setError(err?.response?.data || 'Failed to create trading account.')
+    } finally {
+      setOpeningAccount(false)
+      setTimeout(() => setSuccessMessage(''), 2500)
+    }
+  }
+
+  const selectedAccount = useMemo(() => {
+    return accounts.find((account) => String(account.id) === String(selectedAccountId)) || null
+  }, [accounts, selectedAccountId])
+
+  const accountBalance = selectedAccount ? parseFloat(selectedAccount.balance) : 0
+  const holdingsValue = holdings.reduce((sum, item) => sum + (item.currentValue || 0), 0)
+  const totalProfitLoss = holdings.reduce((sum, item) => sum + (item.profitLoss || 0), 0)
+  const totalPortfolioValue = accountBalance + holdingsValue
+
+  const allocation = useMemo(() => {
+    const total = holdings.reduce((sum, item) => sum + (item.currentValue || 0), 0)
+
+    if (!total) return []
+
+    return holdings.map((item) => ({
+      symbol: item.stockSymbol,
+      companyName: item.companyName,
+      percentage: ((item.currentValue / total) * 100).toFixed(1)
+    }))
+  }, [holdings])
+
+  const formatCurrency = (value) =>
+    new Intl.NumberFormat('en-AU', {
+      style: 'currency',
+      currency: 'AUD'
+    }).format(value || 0)
 
   return (
     <div className="portfolio-page">
@@ -57,8 +115,8 @@ function Portfolio() {
             <p className="portfolio-eyebrow">Portfolio Overview</p>
             <h1 className="portfolio-title">{identity}&apos;s Portfolio</h1>
             <p className="portfolio-subtitle">
-              Review your holdings, monitor investment performance, and track
-              the current value of your portfolio.
+              Review your holdings, account balance, and current portfolio
+              performance using live-backed portfolio data.
             </p>
           </div>
 
@@ -68,170 +126,224 @@ function Portfolio() {
           </div>
         </div>
 
-        <div className="row g-4 mb-4">
-          {summaryCards.map((card) => (
-            <div className="col-md-6 col-xl-3" key={card.title}>
-              <div className="portfolio-card summary-card">
-                <p className="summary-label">{card.title}</p>
-                <h3 className="summary-value">{card.value}</h3>
-                <span className="summary-note">{card.note}</span>
-              </div>
-            </div>
-          ))}
-        </div>
+        {error && (
+          <div className="alert alert-danger mb-4" role="alert">
+            {error}
+          </div>
+        )}
 
-        <div className="row g-4">
-          <div className="col-xl-8">
-            <div className="portfolio-card">
+        {successMessage && (
+          <div className="alert alert-success mb-4" role="alert">
+            {successMessage}
+          </div>
+        )}
+
+        {accountsLoading ? (
+          <div className="portfolio-card">
+            <h3 className="portfolio-section-title">Loading accounts...</h3>
+          </div>
+        ) : accounts.length === 0 ? (
+          <div className="portfolio-card empty-state-card">
+            <h2 className="portfolio-section-title mb-3">No Trading Account Yet</h2>
+            <p className="portfolio-section-subtitle mb-4">
+              Create your trading account to start tracking holdings and building your portfolio.
+            </p>
+
+            <button
+              type="button"
+              className="portfolio-btn"
+              onClick={handleCreateAccount}
+              disabled={openingAccount}
+            >
+              {openingAccount ? 'Creating Account...' : 'Open Trading Account'}
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="portfolio-card account-picker-card mb-4">
               <div className="portfolio-section-header">
                 <div>
-                  <h3 className="portfolio-section-title">Current Holdings</h3>
+                  <h3 className="portfolio-section-title">Trading Account</h3>
                   <p className="portfolio-section-subtitle">
-                    Shares currently owned in your simulated account
+                    Select which account portfolio to view
                   </p>
                 </div>
-
-                <button type="button" className="portfolio-btn">
-                  Add Stock
-                </button>
               </div>
 
-              <div className="table-responsive">
-                <table className="table portfolio-table align-middle mb-0">
-                  <thead>
-                    <tr>
-                      <th>Stock</th>
-                      <th>Shares</th>
-                      <th>Avg Price</th>
-                      <th>Current Price</th>
-                      <th>Market Value</th>
-                      <th>Gain/Loss</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {holdings.map((stock) => (
-                      <tr key={stock.symbol}>
-                        <td>
-                          <div className="portfolio-stock-cell">
-                            <strong>{stock.symbol}</strong>
-                            <span>{stock.company}</span>
-                          </div>
-                        </td>
-                        <td>{stock.shares}</td>
-                        <td>{stock.avgPrice}</td>
-                        <td>{stock.currentPrice}</td>
-                        <td>{stock.marketValue}</td>
-                        <td
-                          className={
-                            stock.gainLoss.startsWith('-')
-                              ? 'loss-text'
-                              : 'profit-text'
-                          }
-                        >
-                          {stock.gainLoss}
-                        </td>
-                      </tr>
+              <div className="row align-items-end">
+                <div className="col-md-6">
+                  <label className="form-label portfolio-label">Account</label>
+                  <select
+                    className="form-select portfolio-select"
+                    value={selectedAccountId}
+                    onChange={(e) => setSelectedAccountId(e.target.value)}
+                  >
+                    {accounts.map((account) => (
+                      <option key={account.id} value={account.id}>
+                        {account.accountName} - #{account.id}
+                      </option>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-xl-4">
-            <div className="portfolio-card mb-4">
-              <div className="portfolio-section-header">
-                <div>
-                  <h3 className="portfolio-section-title">Allocation</h3>
-                  <p className="portfolio-section-subtitle">
-                    Example distribution of your investments
-                  </p>
-                </div>
-              </div>
-
-              <div className="allocation-list">
-                <div className="allocation-item">
-                  <div>
-                    <strong>BHP</strong>
-                    <span>Resources</span>
-                  </div>
-                  <span>32%</span>
+                  </select>
                 </div>
 
-                <div className="allocation-item">
-                  <div>
-                    <strong>CBA</strong>
-                    <span>Banking</span>
+                <div className="col-md-6 mt-3 mt-md-0">
+                  <div className="account-meta">
+                    <span>Created</span>
+                    <strong>
+                      {selectedAccount?.createdAt
+                        ? new Date(selectedAccount.createdAt).toLocaleDateString()
+                        : 'N/A'}
+                    </strong>
                   </div>
-                  <span>28%</span>
-                </div>
-
-                <div className="allocation-item">
-                  <div>
-                    <strong>TLS</strong>
-                    <span>Telecommunications</span>
-                  </div>
-                  <span>18%</span>
-                </div>
-
-                <div className="allocation-item">
-                  <div>
-                    <strong>WES</strong>
-                    <span>Retail / Industrials</span>
-                  </div>
-                  <span>22%</span>
                 </div>
               </div>
             </div>
 
-            <div className="portfolio-card mb-4">
-              <div className="portfolio-section-header">
-                <div>
-                  <h3 className="portfolio-section-title">Quick Actions</h3>
-                  <p className="portfolio-section-subtitle">
-                    Common portfolio actions
-                  </p>
+            <div className="row g-4 mb-4">
+              <div className="col-md-6 col-xl-3">
+                <div className="portfolio-card summary-card">
+                  <p className="summary-label">Available Balance</p>
+                  <h3 className="summary-value">{formatCurrency(accountBalance)}</h3>
+                  <span className="summary-note">Cash ready to trade</span>
                 </div>
               </div>
 
-              <div className="portfolio-actions">
-                <button type="button" className="portfolio-btn w-100">
-                  Buy Shares
-                </button>
-                <button
-                  type="button"
-                  className="portfolio-btn portfolio-btn--secondary w-100"
-                >
-                  Sell Shares
-                </button>
-                <button
-                  type="button"
-                  className="portfolio-btn portfolio-btn--secondary w-100"
-                >
-                  View Transactions
-                </button>
-              </div>
-            </div>
-
-            <div className="portfolio-card">
-              <div className="portfolio-section-header">
-                <div>
-                  <h3 className="portfolio-section-title">Insights</h3>
-                  <p className="portfolio-section-subtitle">
-                    Helpful portfolio notes
-                  </p>
+              <div className="col-md-6 col-xl-3">
+                <div className="portfolio-card summary-card">
+                  <p className="summary-label">Holdings Value</p>
+                  <h3 className="summary-value">{formatCurrency(holdingsValue)}</h3>
+                  <span className="summary-note">Current market value</span>
                 </div>
               </div>
 
-              <ul className="portfolio-insights">
-                <li>Your strongest performing holding is currently BHP.</li>
-                <li>Your portfolio is weighted toward large-cap ASX stocks.</li>
-                <li>Portfolio analytics and graphs can be added later.</li>
-                <li>Live valuation can be connected once backend data is ready.</li>
-              </ul>
+              <div className="col-md-6 col-xl-3">
+                <div className="portfolio-card summary-card">
+                  <p className="summary-label">Total Portfolio Value</p>
+                  <h3 className="summary-value">{formatCurrency(totalPortfolioValue)}</h3>
+                  <span className="summary-note">Balance + holdings</span>
+                </div>
+              </div>
+
+              <div className="col-md-6 col-xl-3">
+                <div className="portfolio-card summary-card">
+                  <p className="summary-label">Profit / Loss</p>
+                  <h3 className="summary-value">{formatCurrency(totalProfitLoss)}</h3>
+                  <span className={totalProfitLoss >= 0 ? 'summary-note profit-text' : 'summary-note loss-text'}>
+                    {totalProfitLoss >= 0 ? 'Overall gain' : 'Overall loss'}
+                  </span>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+
+            <div className="row g-4">
+              <div className="col-xl-8">
+                <div className="portfolio-card">
+                  <div className="portfolio-section-header">
+                    <div>
+                      <h3 className="portfolio-section-title">Current Holdings</h3>
+                      <p className="portfolio-section-subtitle">
+                        Stocks currently held in this trading account
+                      </p>
+                    </div>
+                  </div>
+
+                  {holdingsLoading ? (
+                    <p className="mb-0">Loading holdings...</p>
+                  ) : holdings.length === 0 ? (
+                    <div className="empty-holdings-state">
+                      <h4>No holdings yet</h4>
+                      <p>
+                        Once stocks are purchased, they will appear here with average
+                        buy price, current value, and profit/loss.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="table-responsive">
+                      <table className="table portfolio-table align-middle mb-0">
+                        <thead>
+                          <tr>
+                            <th>Stock</th>
+                            <th>Shares</th>
+                            <th>Avg Price</th>
+                            <th>Current Price</th>
+                            <th>Market Value</th>
+                            <th>Profit/Loss</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {holdings.map((stock) => (
+                            <tr key={stock.stockSymbol}>
+                              <td>
+                                <div className="portfolio-stock-cell">
+                                  <strong>{stock.stockSymbol}</strong>
+                                  <span>{stock.companyName}</span>
+                                </div>
+                              </td>
+                              <td>{stock.quantity}</td>
+                              <td>{formatCurrency(stock.averageBuyPrice)}</td>
+                              <td>{formatCurrency(stock.currentPrice)}</td>
+                              <td>{formatCurrency(stock.currentValue)}</td>
+                              <td className={stock.profitLoss >= 0 ? 'profit-text' : 'loss-text'}>
+                                {formatCurrency(stock.profitLoss)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="col-xl-4">
+                <div className="portfolio-card mb-4">
+                  <div className="portfolio-section-header">
+                    <div>
+                      <h3 className="portfolio-section-title">Allocation</h3>
+                      <p className="portfolio-section-subtitle">
+                        Current portfolio weight by holding value
+                      </p>
+                    </div>
+                  </div>
+
+                  {allocation.length === 0 ? (
+                    <p className="mb-0">No allocation data available yet.</p>
+                  ) : (
+                    <div className="allocation-list">
+                      {allocation.map((item) => (
+                        <div className="allocation-item" key={item.symbol}>
+                          <div>
+                            <strong>{item.symbol}</strong>
+                            <span>{item.companyName}</span>
+                          </div>
+                          <span>{item.percentage}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="portfolio-card">
+                  <div className="portfolio-section-header">
+                    <div>
+                      <h3 className="portfolio-section-title">Insights</h3>
+                      <p className="portfolio-section-subtitle">
+                        Helpful portfolio notes
+                      </p>
+                    </div>
+                  </div>
+
+                  <ul className="portfolio-insights">
+                    <li>Portfolio values update from the backend holdings endpoint.</li>
+                    <li>Current prices are calculated per holding response.</li>
+                    <li>Buy and sell activity will affect both balance and holdings.</li>
+                    <li>Graphs and historical trends can be layered in later.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
