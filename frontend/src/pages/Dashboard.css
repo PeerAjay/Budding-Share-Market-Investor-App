@@ -77,9 +77,11 @@
 
 .stat-value {
   color: #0f172a;
-  font-size: 1.9rem;
+  font-size: 1.3rem;
   font-weight: 800;
   margin-bottom: 0.55rem;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .stat-change {
