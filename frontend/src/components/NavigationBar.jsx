@@ -15,6 +15,10 @@ function NavigationBar({ user, onLogout }) {
           Dashboard
         </Link>
 
+        <Link to="/portfolio" className="app-navbar__link">
+          Portfolio
+        </Link>
+
         <Link to="/profile" className="app-navbar__link">
           Profile
         </Link>

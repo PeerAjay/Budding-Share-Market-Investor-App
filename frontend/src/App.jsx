@@ -4,6 +4,7 @@ import Login from './pages/Login'
 import Registration from './pages/Registration'
 import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
+import Portfolio from './pages/Portfolio'
 import NavigationBar from './components/NavigationBar'
 import { useAuth } from './services/AuthContext'
 import './App.css'
@@ -46,6 +47,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/portfolio"
+          element={
+            <ProtectedRoute>
+              <Portfolio />
             </ProtectedRoute>
           }
         />
