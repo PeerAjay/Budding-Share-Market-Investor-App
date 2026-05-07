@@ -1,0 +1,568 @@
+/* ─── Page ─── */
+.mkt-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(79, 70, 229, 0.1), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.1), transparent 24%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+  padding: 2rem 0;
+}
+
+.mkt-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ─── Header ─── */
+.mkt-hdr {
+  margin-bottom: 1.75rem;
+}
+
+.mkt-title {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.2rem;
+}
+
+.mkt-sub {
+  color: #64748b;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* ─── Two-column layout ─── */
+.mkt-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.mkt-left {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* ─── Stock cards ─── */
+.mkt-card {
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 0.65rem;
+  cursor: pointer;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.mkt-card--list:hover {
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+  border-color: #cbd5e1;
+}
+
+.mkt-card--sel {
+  border-color: #6366f1;
+  background: #f5f3ff;
+  cursor: default;
+}
+
+.mkt-lbl {
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  margin-bottom: 0.55rem;
+}
+
+.mkt-lbl--sel {
+  color: #6366f1;
+}
+
+.mkt-lbl--list {
+  color: #94a3b8;
+}
+
+.mkt-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.mkt-av {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.72rem;
+  flex-shrink: 0;
+  letter-spacing: 0.03em;
+}
+
+.mkt-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mkt-name {
+  font-size: 0.93rem;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mkt-meta {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  margin-top: 0.1rem;
+}
+
+.mkt-pc {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.mkt-price {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.mkt-chg {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.mkt-chg.pos {
+  color: #16a34a;
+}
+
+.mkt-chg.neg {
+  color: #dc2626;
+}
+
+/* ─── Trade panel ─── */
+.mkt-trade {
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.1rem 1.2rem;
+  margin-bottom: 0.65rem;
+}
+
+.mkt-trade-ttl {
+  font-size: 0.93rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 1rem;
+}
+
+.mkt-tgrid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.mkt-tgrid--top {
+  margin-bottom: 0.7rem;
+}
+
+.mkt-tlbl {
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 0.35rem;
+}
+
+.mkt-sel-wrap {
+  padding: 0.75rem 1rem 0.5rem;
+}
+
+.mkt-sel-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.mkt-sel-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.mkt-sel-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin-bottom: 0.15rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mkt-sel-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #4f46e5;
+  margin-bottom: 0.5rem;
+}
+
+.mkt-sel-meta {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: #94a3b8;
+}
+
+.mkt-stock-sel {
+  border-radius: 8px;
+  font-size: 0.83rem;
+  border-color: #c7d2fe;
+  color: #3730a3;
+  background-color: #eef2ff;
+  padding: 0.3rem 0.6rem;
+}
+
+.mkt-tsel {
+  border-radius: 10px;
+  font-size: 0.88rem;
+  border-color: #e2e8f0;
+}
+
+.mkt-est {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.mkt-est-lbl {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-bottom: 0.15rem;
+}
+
+.mkt-est-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.mkt-qty-wrap {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.mkt-qty-inp {
+  border: none;
+  border-radius: 0;
+  flex: 1;
+  min-width: 0;
+  font-size: 0.88rem;
+  box-shadow: none !important;
+}
+
+.mkt-qty-inp:focus {
+  outline: none;
+  box-shadow: none !important;
+}
+
+.mkt-qty-sfx {
+  padding: 0 0.7rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #94a3b8;
+  background: #f8fafc;
+  border-left: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.mkt-tbtns {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.mkt-buy {
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.55rem 1.3rem;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.mkt-buy:hover {
+  background: #4338ca;
+  transform: translateY(-1px);
+}
+
+.mkt-sell {
+  background: transparent;
+  color: #dc2626;
+  border: 2px solid #dc2626;
+  border-radius: 10px;
+  padding: 0.48rem 1.1rem;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.mkt-sell:hover {
+  background: #fef2f2;
+  transform: translateY(-1px);
+}
+
+/* ─── Stock table card ─── */
+.mkt-tbl-wrap {
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.mkt-tbl-hdr {
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0f172a;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.mkt-dtbl {
+  font-size: 0.85rem;
+}
+
+.mkt-dtbl thead th {
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.65rem 1rem;
+  background: transparent;
+}
+
+.mkt-dtbl tbody td {
+  padding: 0.7rem 1rem;
+  border-color: #f1f5f9;
+  vertical-align: middle;
+}
+
+.mkt-tr-sel td {
+  background: #f5f3ff;
+}
+
+.mkt-ticker {
+  display: inline-block;
+  background: #f1f5f9;
+  color: #334155;
+  font-weight: 700;
+  font-size: 0.75rem;
+  border-radius: 6px;
+  padding: 0.18rem 0.5rem;
+}
+
+.mkt-tco {
+  font-weight: 500;
+  color: #334155;
+}
+
+.mkt-tpr {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.mkt-tch {
+  font-weight: 700;
+  font-size: 0.83rem;
+}
+
+.mkt-tch.pos {
+  color: #16a34a;
+}
+
+.mkt-tch.neg {
+  color: #dc2626;
+}
+
+.mkt-alz {
+  background: none;
+  border: none;
+  color: #4f46e5;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.mkt-alz:hover {
+  color: #4338ca;
+}
+
+/* ─── Holdings sidebar ─── */
+.mkt-hcard {
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.1rem 1.2rem;
+  position: sticky;
+  top: 1.5rem;
+}
+
+.mkt-hd {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mkt-ht {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.mkt-hbg {
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 6px;
+  padding: 0.18rem 0.5rem;
+}
+
+.mkt-divider {
+  border: none;
+  border-top: 1px solid #f1f5f9;
+  margin: 0.75rem 0;
+}
+
+.mkt-hrows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.mkt-hrow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.mkt-hl {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.mkt-cn {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.mkt-hv {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f172a;
+  text-align: right;
+}
+
+.mkt-gn {
+  color: #16a34a !important;
+}
+
+.mkt-pnl-ttl {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 0.5rem;
+}
+
+.mkt-pnl-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 0.7rem 0.85rem;
+}
+
+.mkt-pnl-sub {
+  font-size: 0.72rem;
+  color: #64748b;
+  margin-bottom: 0.1rem;
+}
+
+.mkt-pnl-v {
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: #16a34a;
+}
+
+.mkt-pnl-bg {
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 0.28rem 0.55rem;
+}
+
+.mkt-hft {
+  text-align: center;
+}
+
+.mkt-plink {
+  color: #4f46e5;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.mkt-plink:hover {
+  color: #3730a3;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+  .mkt-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .mkt-hcard {
+    position: static;
+  }
+}

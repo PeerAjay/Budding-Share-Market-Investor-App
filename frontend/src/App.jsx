@@ -5,6 +5,7 @@ import Registration from './pages/Registration'
 import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
 import Portfolio from './pages/Portfolio'
+import Market from './pages/Market'
 import NavigationBar from './components/NavigationBar'
 import { useAuth } from './services/AuthContext'
 import './App.css'
@@ -55,6 +56,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Portfolio />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/market"
+          element={
+            <ProtectedRoute>
+              <Market />
             </ProtectedRoute>
           }
         />
