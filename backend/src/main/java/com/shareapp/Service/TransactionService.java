@@ -1,22 +1,22 @@
-package com.shareapp.service;
+package com.shareapp.Service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import com.shareapp.model.Stock;
-import com.shareapp.repository.StocksRepository;
-import com.shareapp.model.User;
-import com.shareapp.repository.UserRepository;
-import com.shareapp.model.Holding;
-import com.shareapp.repository.HoldingRepository;
-import com.shareapp.model.TradingAccount;
-import com.shareapp.repository.TradingAccountRepository;
-import com.shareapp.model.StockPriceHistory;
-import com.shareapp.repository.StockPriceHistoryRepository;
-import com.shareapp.model.Transaction;
-import com.shareapp.repository.TransactionRepository;
+import com.shareapp.Model.Stock;
+import com.shareapp.Repository.StocksRepository;
+import com.shareapp.Model.User;
+import com.shareapp.Repository.UserRepository;
+import com.shareapp.Model.Holding;
+import com.shareapp.Repository.HoldingRepository;
+import com.shareapp.Model.TradingAccount;
+import com.shareapp.Repository.TradingAccountRepository;
+import com.shareapp.Model.StockPriceHistory;
+import com.shareapp.Repository.StockPriceHistoryRepository;
+import com.shareapp.Model.Transaction;
+import com.shareapp.Repository.TransactionRepository;
 import com.shareapp.DataTransferObjects.TransactionResponseDTO;
 
 
