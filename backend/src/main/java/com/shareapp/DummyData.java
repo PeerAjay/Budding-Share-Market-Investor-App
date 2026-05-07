@@ -4,12 +4,12 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-import com.shareapp.Model.Stock;
-import com.shareapp.Model.StockPriceHistory;
-import com.shareapp.Repository.StocksRepository;
-import com.shareapp.Repository.StockPriceHistoryRepository;
-import com.shareapp.Model.User;
-import com.shareapp.Repository.UserRepository;
+import com.shareapp.model.Stock;
+import com.shareapp.model.StockPriceHistory;
+import com.shareapp.repository.StocksRepository;
+import com.shareapp.repository.StockPriceHistoryRepository;
+import com.shareapp.model.User;
+import com.shareapp.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Component

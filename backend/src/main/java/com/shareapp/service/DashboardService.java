@@ -1,11 +1,11 @@
-package com.shareapp.Service;
+package com.shareapp.service;
 
 import com.shareapp.DataTransferObjects.TradingAccountRequestDTO;
 import com.shareapp.DataTransferObjects.TradingAccountResponseDTO;
-import com.shareapp.Model.TradingAccount;
-import com.shareapp.Model.User;
-import com.shareapp.Repository.TradingAccountRepository;
-import com.shareapp.Repository.UserRepository;
+import com.shareapp.model.TradingAccount;
+import com.shareapp.model.User;
+import com.shareapp.repository.TradingAccountRepository;
+import com.shareapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

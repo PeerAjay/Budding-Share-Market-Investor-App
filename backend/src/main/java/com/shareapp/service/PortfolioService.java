@@ -1,13 +1,12 @@
-package com.shareapp.Service;
+package com.shareapp.service;
 
 import org.springframework.stereotype.Service;
 
 import com.shareapp.DataTransferObjects.HoldingResponseDTO;
-import com.shareapp.Model.Holding;
-import com.shareapp.Model.TradingAccount;
-import com.shareapp.Repository.HoldingRepository;
-import com.shareapp.Repository.TradingAccountRepository;
-import com.shareapp.Service.TwelveDataService;
+import com.shareapp.model.Holding;
+import com.shareapp.model.TradingAccount;
+import com.shareapp.repository.HoldingRepository;
+import com.shareapp.repository.TradingAccountRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

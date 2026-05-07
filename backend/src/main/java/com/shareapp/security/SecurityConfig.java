@@ -1,4 +1,4 @@
-package com.shareapp.Security;
+package com.shareapp.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

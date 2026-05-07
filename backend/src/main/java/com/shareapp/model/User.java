@@ -1,4 +1,4 @@
-package com.shareapp.Model;
+package com.shareapp.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

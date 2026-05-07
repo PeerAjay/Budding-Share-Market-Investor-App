@@ -1,7 +1,7 @@
-package com.shareapp.Repository;
+package com.shareapp.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.shareapp.Model.Transaction;
+import com.shareapp.model.Transaction;
 
 import java.util.List;
 

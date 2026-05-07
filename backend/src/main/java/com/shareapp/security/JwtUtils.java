@@ -1,4 +1,4 @@
-package com.shareapp.Security;
+package com.shareapp.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

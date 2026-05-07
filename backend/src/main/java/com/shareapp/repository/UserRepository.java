@@ -1,6 +1,6 @@
-package com.shareapp.Repository;
+package com.shareapp.repository;
 
-import com.shareapp.Model.User;
+import com.shareapp.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {

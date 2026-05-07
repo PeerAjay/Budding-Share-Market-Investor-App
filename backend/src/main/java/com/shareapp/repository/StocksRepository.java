@@ -1,6 +1,5 @@
-package com.shareapp.Repository;
-import com.shareapp.Model.Stock;
-import com.shareapp.Model.User;
+package com.shareapp.repository;
+import com.shareapp.model.Stock;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StocksRepository extends JpaRepository<Stock, Long> {

@@ -1,14 +1,12 @@
-package com.shareapp.Service;
+package com.shareapp.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import com.shareapp.Model.Stock;
-import com.shareapp.Repository.StocksRepository;
-import com.shareapp.Model.User;
-import com.shareapp.Repository.UserRepository;
+import com.shareapp.model.Stock;
+import com.shareapp.repository.StocksRepository;
 
 @Service
 public class StocksService {
