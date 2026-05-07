@@ -4,10 +4,10 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-import com.shareapp.model.Stock;
-import com.shareapp.model.StockPriceHistory;
-import com.shareapp.repository.StocksRepository; 
-import com.shareapp.repository.StockPriceHistoryRepository;   
+import com.shareapp.Model.Stock;
+import com.shareapp.Model.StockPriceHistory;
+import com.shareapp.Repository.StocksRepository;
+import com.shareapp.Repository.StockPriceHistoryRepository;
 
 @Component
 public class DummyData implements CommandLineRunner{

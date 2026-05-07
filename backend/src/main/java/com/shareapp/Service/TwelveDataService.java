@@ -1,4 +1,4 @@
-package com.shareapp.service;
+package com.shareapp.Service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

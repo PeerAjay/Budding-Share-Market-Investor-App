@@ -1,11 +1,11 @@
-package com.shareapp.model;
+package com.shareapp.Model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-import com.shareapp.model.Stock;
-import com.shareapp.model.User;
-import com.shareapp.model.TradingAccount;
+import com.shareapp.Model.Stock;
+import com.shareapp.Model.User;
+import com.shareapp.Model.TradingAccount;
 
 @Entity
 @Table(name = "shares")

@@ -1,4 +1,4 @@
-package com.shareapp.controller;
+package com.shareapp.Controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.shareapp.DataTransferObjects.TransactionDTO;
 import com.shareapp.DataTransferObjects.UserResponseDTO;
 import com.shareapp.DataTransferObjects.TransactionResponseDTO;
-import com.shareapp.service.TransactionService;
+import com.shareapp.Service.TransactionService;
 
 
 import jakarta.validation.Valid;
