@@ -13,6 +13,8 @@ function Dashboard() {
   const [accountsLoading, setAccountsLoading] = useState(true)
   const [holdingsLoading, setHoldingsLoading] = useState(false)
   const [openingAccount, setOpeningAccount] = useState(false)
+  const [newAccountName, setNewAccountName] = useState('')
+  const [showCreateAccountForm, setShowCreateAccountForm] = useState(false)
   const [error, setError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
 
@@ -39,7 +41,13 @@ function Dashboard() {
       setAccounts(accountList)
 
       if (accountList.length > 0) {
-        setSelectedAccountId(String(accountList[0].id))
+        setSelectedAccountId((prev) =>
+          prev && accountList.some((account) => String(account.id) === String(prev))
+            ? prev
+            : String(accountList[0].id)
+        )
+      } else {
+        setSelectedAccountId('')
       }
     } catch (err) {
       setError(err?.response?.data || 'Failed to load trading accounts.')
@@ -63,17 +71,33 @@ function Dashboard() {
   }
 
   const handleCreateAccount = async () => {
+    const trimmedName = newAccountName.trim()
+
+    if (!trimmedName) {
+      setError('Please enter an account name.')
+      return
+    }
+
     setOpeningAccount(true)
     setError('')
     setSuccessMessage('')
 
     try {
-      await api.post('/dashboard/accounts', {
-        accountName: 'Main Trading Account'
+      const response = await api.post('/dashboard/accounts', {
+        accountName: trimmedName
       })
 
+      const createdAccount = response.data
+
       setSuccessMessage('Trading account created successfully.')
+      setNewAccountName('')
+      setShowCreateAccountForm(false)
+
       await fetchAccounts()
+
+      if (createdAccount?.id) {
+        setSelectedAccountId(String(createdAccount.id))
+      }
     } catch (err) {
       setError(err?.response?.data || 'Failed to create trading account.')
     } finally {
@@ -172,14 +196,14 @@ function Dashboard() {
             <p className="dashboard-eyebrow">Welcome back</p>
             <h1 className="dashboard-title">{identity}&apos;s Dashboard</h1>
             <p className="dashboard-subtitle">
-              View your trading account, portfolio balance, and current holdings
+              View your trading accounts, portfolio balance, and current holdings
               from your connected backend data.
             </p>
           </div>
 
           <div className="dashboard-hero-badge">
             Account Status
-            <span>{accounts.length > 0 ? 'Active' : 'Not Opened'}</span>
+            <span>{accounts.length > 0 ? `${accounts.length} Account${accounts.length > 1 ? 's' : ''}` : 'Not Opened'}</span>
           </div>
         </div>
 
@@ -206,29 +230,46 @@ function Dashboard() {
           <div className="dashboard-card empty-state-card">
             <h2 className="section-title mb-3">No Trading Account Yet</h2>
             <p className="section-subtitle mb-4">
-              Open your trading account to start tracking your balance,
+              Create your first trading account to start tracking your balance,
               portfolio value, and holdings.
             </p>
 
-            <button
-              type="button"
-              className="dashboard-btn"
-              onClick={handleCreateAccount}
-              disabled={openingAccount}
-            >
-              {openingAccount ? 'Creating Account...' : 'Open Trading Account'}
-            </button>
+            <div className="create-account-inline">
+              <input
+                type="text"
+                className="form-control dashboard-input"
+                placeholder="Enter account name"
+                value={newAccountName}
+                onChange={(e) => setNewAccountName(e.target.value)}
+              />
+              <button
+                type="button"
+                className="dashboard-btn"
+                onClick={handleCreateAccount}
+                disabled={openingAccount}
+              >
+                {openingAccount ? 'Creating...' : 'Open Trading Account'}
+              </button>
+            </div>
           </div>
         ) : (
           <>
             <div className="dashboard-card account-picker-card mb-4">
               <div className="section-header">
                 <div>
-                  <h3 className="section-title">Trading Account</h3>
+                  <h3 className="section-title">Trading Accounts</h3>
                   <p className="section-subtitle">
-                    Select an account to view dashboard information
+                    Select an account to view dashboard information or create another account
                   </p>
                 </div>
+
+                <button
+                  type="button"
+                  className="dashboard-btn dashboard-btn--secondary"
+                  onClick={() => setShowCreateAccountForm((prev) => !prev)}
+                >
+                  {showCreateAccountForm ? 'Cancel' : 'Add Trading Account'}
+                </button>
               </div>
 
               <div className="row align-items-end">
@@ -258,6 +299,29 @@ function Dashboard() {
                   </div>
                 </div>
               </div>
+
+              {showCreateAccountForm && (
+                <div className="create-account-panel mt-4">
+                  <label className="form-label dashboard-label">New account name</label>
+                  <div className="create-account-inline">
+                    <input
+                      type="text"
+                      className="form-control dashboard-input"
+                      placeholder="Example: Growth Portfolio"
+                      value={newAccountName}
+                      onChange={(e) => setNewAccountName(e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      className="dashboard-btn"
+                      onClick={handleCreateAccount}
+                      disabled={openingAccount}
+                    >
+                      {openingAccount ? 'Creating...' : 'Create Account'}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="row g-4 mb-4">
@@ -400,8 +464,8 @@ function Dashboard() {
 
                     <div className="watchlist-item">
                       <div>
-                        <h4>Holdings Count</h4>
-                        <p>{holdings.length} Active Positions</p>
+                        <h4>Total Accounts</h4>
+                        <p>{accounts.length}</p>
                       </div>
                     </div>
 
