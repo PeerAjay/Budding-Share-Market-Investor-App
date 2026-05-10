@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EodStockPriceDTO {
+public class EodhdStockPriceDTO {
 
     private LocalDate date;
     private BigDecimal open;

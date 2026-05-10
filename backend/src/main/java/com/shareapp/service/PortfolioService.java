@@ -16,14 +16,11 @@ public class PortfolioService {
 
     private final HoldingRepository holdingRepository;
     private final TradingAccountRepository tradingAccountRepository;
-    private final TwelveDataService twelveDataService;
 
     public PortfolioService(HoldingRepository holdingRepository,
-            TradingAccountRepository tradingAccountRepository,
-            TwelveDataService twelveDataService) {
+            TradingAccountRepository tradingAccountRepository) {
         this.holdingRepository = holdingRepository;
         this.tradingAccountRepository = tradingAccountRepository;
-        this.twelveDataService = twelveDataService;
     }
 
     public List<HoldingResponseDTO> getHoldings(Long accountId) {
@@ -34,7 +31,12 @@ public class PortfolioService {
 
         return holdings.stream().map(holding -> {
             String symbol = holding.getStock().getSymbol();
-            Double currentPrice = twelveDataService.getCurrentPrice(symbol);
+            Double currentPrice = holding.getStock().getCurrentPrice();
+
+            if (currentPrice == null) {
+                currentPrice = holding.getAverageBuyPrice();
+            }
+
             Double currentValue = currentPrice * holding.getQuantity();
             Double profitLoss = (currentPrice - holding.getAverageBuyPrice()) * holding.getQuantity();
 
