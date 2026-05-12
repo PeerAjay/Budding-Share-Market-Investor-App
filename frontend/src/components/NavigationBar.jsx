@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
-import './NavigationBar.css'
+import { Link } from "react-router-dom";
+import "./NavigationBar.css";
 
 function NavigationBar({ user, onLogout }) {
   return (
@@ -23,13 +23,17 @@ function NavigationBar({ user, onLogout }) {
           Market
         </Link>
 
+        <Link to="/transactions" className="app-navbar__link">
+          Transactions
+        </Link>
+
         <Link to="/profile" className="app-navbar__link">
           Profile
         </Link>
 
         <div className="app-navbar__user">
           <span className="app-navbar__user-label">
-            {user?.identity || 'User'}
+            {user?.identity || "User"}
           </span>
         </div>
 
@@ -38,7 +42,7 @@ function NavigationBar({ user, onLogout }) {
         </button>
       </div>
     </nav>
-  )
+  );
 }
 
-export default NavigationBar
+export default NavigationBar;
