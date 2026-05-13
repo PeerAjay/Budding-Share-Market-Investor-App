@@ -3,18 +3,18 @@ import api from '../services/api'
 import './Market.css'
 
 const AVATAR_COLORS = ['#4f46e5', '#0284c7', '#059669', '#f59e0b', '#dc2626', '#7c3aed', '#0891b2']
+const BROKERAGE_FEE = 10
 
 function Market() {
     const [stocks, setStocks] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
+    const [successMessage, setSuccessMessage] = useState('')
     const [selIdx, setSelIdx] = useState(0)
     const [qty, setQty] = useState('')
     const [accounts, setAccounts] = useState([])
     const [selAccount, setSelAccount] = useState('')
-    const [holdings, setHoldings] = useState([])
-    const [tradeMsg, setTradeMsg] = useState(null)   // { type: 'success'|'error', text }
-    const [trading, setTrading] = useState(false)
+    const [buying, setBuying] = useState(false)
 
     useEffect(() => {
         api.get('/stocks')
@@ -31,65 +31,76 @@ function Market() {
                 setAccounts(accs)
                 if (accs.length > 0) setSelAccount(accs[0].id)
             })
-            .catch(() => { })
+            .catch(() => {})
     }, [])
 
-    useEffect(() => {
-        if (!selAccount) { setHoldings([]); return }
-        api.get(`/portfolio/${selAccount}/holdings`)
-            .then(res => setHoldings(res.data || []))
-            .catch(() => setHoldings([]))
-    }, [selAccount])
-
     const AVATAR_BG = (symbol) => AVATAR_COLORS[(symbol?.charCodeAt(0) || 0) % AVATAR_COLORS.length]
-
-    const refreshHoldings = (accountId) => {
-        api.get(`/portfolio/${accountId}/holdings`)
-            .then(res => setHoldings(res.data || []))
-            .catch(() => setHoldings([]))
-    }
-
-    const refreshAccounts = () => {
-        api.get('/dashboard/accounts')
-            .then(res => setAccounts(res.data || []))
-            .catch(() => { })
-    }
-
-    const handleTrade = (type) => {
-        const quantity = parseInt(qty, 10)
-        if (!selAccount) return setTradeMsg({ type: 'error', text: 'Please select a trading account.' })
-        if (!quantity || quantity <= 0) return setTradeMsg({ type: 'error', text: 'Please enter a valid quantity.' })
-
-        setTrading(true)
-        setTradeMsg(null)
-        api.post(`/transactions/${type}`, {
-            accountId: Number(selAccount),
-            stockSymbol: sel.symbol,
-            quantity
-        })
-            .then(res => {
-                setTradeMsg({ type: 'success', text: `Successfully ${type === 'buy' ? 'bought' : 'sold'} ${quantity} share(s) of ${sel.symbol}.` })
-                setTimeout(() => setTradeMsg(null), 2000)
-                setQty('')
-                refreshHoldings(selAccount)
-                refreshAccounts()
-            })
-            .catch(err => {
-                const msg = err.response?.data || `Failed to ${type} shares.`
-                setTradeMsg({ type: 'error', text: typeof msg === 'string' ? msg : `Failed to ${type} shares.` })
-            })
-            .finally(() => setTrading(false))
-    }
 
     if (loading) return <div className="mkt-page"><div className="mkt-container"><p className="text-muted mt-4">Loading market data...</p></div></div>
     if (error) return <div className="mkt-page"><div className="mkt-container"><div className="alert alert-danger mt-4">{error}</div></div></div>
     if (stocks.length === 0) return <div className="mkt-page"><div className="mkt-container"><p className="text-muted mt-4">No stocks available.</p></div></div>
 
     const sel = stocks[selIdx]
-    const selHolding = holdings.find(h => h.stockSymbol === sel?.symbol) || null
-    const est = qty && !isNaN(parseFloat(qty)) && sel?.currentPrice
-        ? (parseFloat(qty) * sel.currentPrice).toFixed(2)
+    const qtyValue = Number.parseInt(qty, 10)
+    const hasValidQty = Number.isInteger(qtyValue) && qtyValue > 0
+    const est = hasValidQty && sel?.currentPrice != null
+        ? (qtyValue * sel.currentPrice + BROKERAGE_FEE).toFixed(2)
         : '0.00'
+
+    const handleBuy = async () => {
+        setError('')
+        setSuccessMessage('')
+
+        if (!selAccount) {
+            setError('Select a trading account first.')
+            return
+        }
+
+        if (!hasValidQty) {
+            setError('Enter a valid share quantity.')
+            return
+        }
+
+        if (!sel?.symbol) {
+            setError('Select a stock to buy.')
+            return
+        }
+
+        const selectedAccount = accounts.find(acc => String(acc.id) === String(selAccount))
+        const estimatedCost = qtyValue * (sel.currentPrice || 0) + BROKERAGE_FEE
+
+        if (selectedAccount?.balance != null && Number(selectedAccount.balance) < estimatedCost) {
+            setError('Insufficient balance for this trade.')
+            return
+        }
+
+        setBuying(true)
+
+        try {
+            await api.post('/transactions/buy', {
+                accountId: Number(selAccount),
+                stockSymbol: sel.symbol,
+                quantity: qtyValue
+            })
+
+            setSuccessMessage(`Bought ${qtyValue} share${qtyValue === 1 ? '' : 's'} of ${sel.symbol}.`)
+            setQty('')
+
+            const refreshedAccounts = await api.get('/dashboard/accounts')
+            const accs = refreshedAccounts.data || []
+            setAccounts(accs)
+
+            const updatedAccount = accs.find(acc => String(acc.id) === String(selAccount))
+            if (updatedAccount) {
+                setSelAccount(String(updatedAccount.id))
+            }
+        } catch (err) {
+            setError(err?.response?.data || 'Failed to buy shares.')
+        } finally {
+            setBuying(false)
+            setTimeout(() => setSuccessMessage(''), 2500)
+        }
+    }
 
     return (
         <div className="mkt-page">
@@ -158,27 +169,25 @@ function Market() {
                                         <input
                                             type="number"
                                             className="form-control mkt-qty-inp"
-                                            placeholder="0"
-                                            min={1}
-                                            step={1}
+                                            placeholder="0.00"
+                                            min={0}
                                             value={qty}
-                                            onChange={e => { setQty(e.target.value); setTradeMsg(null) }}
+                                            onChange={e => setQty(e.target.value)}
                                         />
                                         <span className="mkt-qty-sfx">SHARES</span>
                                     </div>
                                 </div>
                                 <div className="mkt-tbtns">
-                                    <button className="mkt-buy" disabled={trading} onClick={() => handleTrade('buy')}>
-                                        {trading ? 'Processing…' : 'Buy'}
+                                    <button className="mkt-buy" type="button" onClick={handleBuy} disabled={buying || !selAccount || !hasValidQty}>
+                                        {buying ? 'Buying...' : 'Buy'}
                                     </button>
-                                    <button className="mkt-sell" disabled={trading} onClick={() => handleTrade('sell')}>
-                                        {trading ? 'Processing…' : 'Sell'}
-                                    </button>
+                                    <button className="mkt-sell">Sell</button>
                                 </div>
                             </div>
-                            {tradeMsg && (
-                                <div className={`mkt-trade-msg mkt-trade-msg--${tradeMsg.type}`}>
-                                    {tradeMsg.text}
+                            {(error || successMessage) && (
+                                <div className="mt-3">
+                                    {error && <div className="alert alert-danger mb-0" role="alert">{error}</div>}
+                                    {successMessage && <div className="alert alert-success mb-0" role="alert">{successMessage}</div>}
                                 </div>
                             )}
                         </div>
@@ -188,28 +197,28 @@ function Market() {
                             <div className="table-responsive">
                                 <table className="table mkt-dtbl align-middle mb-0">
                                     <thead>
-                                        <tr>
-                                            <th>TICKER</th>
-                                            <th>COMPANY</th>
-                                            <th>PRICE</th>
-                                            <th>24H CHANGE</th>
-                                            <th>ACTIONS</th>
-                                        </tr>
+                                    <tr>
+                                        <th>TICKER</th>
+                                        <th>COMPANY</th>
+                                        <th>PRICE</th>
+                                        <th>24H CHANGE</th>
+                                        <th>ACTIONS</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
-                                        {stocks.map((s, i) => (
-                                            <tr key={s.symbol} className={i === selIdx ? 'mkt-tr-sel' : ''} onClick={() => setSelIdx(i)} style={{ cursor: 'pointer' }}>
-                                                <td><span className="mkt-ticker">{s.symbol}</span></td>
-                                                <td className="mkt-tco">{s.companyName}</td>
-                                                <td className="mkt-tpr">${s.currentPrice != null ? s.currentPrice.toFixed(2) : '—'}</td>
-                                                <td><span className="mkt-tch">—</span></td>
-                                                <td>
-                                                    <button type="button" className="mkt-alz" onClick={e => { e.stopPropagation(); setSelIdx(i) }}>
-                                                        + Add Stock
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
+                                    {stocks.map((s, i) => (
+                                        <tr key={s.symbol} className={i === selIdx ? 'mkt-tr-sel' : ''} onClick={() => setSelIdx(i)} style={{ cursor: 'pointer' }}>
+                                            <td><span className="mkt-ticker">{s.symbol}</span></td>
+                                            <td className="mkt-tco">{s.companyName}</td>
+                                            <td className="mkt-tpr">${s.currentPrice != null ? s.currentPrice.toFixed(2) : '—'}</td>
+                                            <td><span className="mkt-tch">—</span></td>
+                                            <td>
+                                                <button type="button" className="mkt-alz" onClick={e => { e.stopPropagation(); setSelIdx(i) }}>
+                                                    + Add Stock
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
                                     </tbody>
                                 </table>
                             </div>
@@ -221,27 +230,20 @@ function Market() {
                         <div className="mkt-hcard">
                             <div className="mkt-hd">
                                 <h3 className="mkt-ht">My Holdings</h3>
-                                <span className="mkt-ht-sub">{sel?.symbol}</span>
                             </div>
                             <hr className="mkt-divider" />
                             <div className="mkt-hrows">
                                 <div className="mkt-hrow">
                                     <span className="mkt-hl">QUANTITY</span>
-                                    <strong className="mkt-hv">{selHolding ? selHolding.quantity : '—'}</strong>
+                                    <strong className="mkt-hv">—</strong>
                                 </div>
                                 <div className="mkt-hrow">
                                     <span className="mkt-hl">AVERAGE COST</span>
-                                    <strong className="mkt-hv">{selHolding ? `$${selHolding.averageBuyPrice.toFixed(2)}` : '—'}</strong>
+                                    <strong className="mkt-hv">—</strong>
                                 </div>
                                 <div className="mkt-hrow">
                                     <span className="mkt-hl">CURRENT VALUE</span>
-                                    <strong className="mkt-hv">{selHolding ? `$${selHolding.currentValue.toFixed(2)}` : '—'}</strong>
-                                </div>
-                                <div className="mkt-hrow">
-                                    <span className="mkt-hl">PROFIT / LOSS</span>
-                                    <strong className={`mkt-hv ${selHolding ? (selHolding.profitLoss >= 0 ? 'mkt-hv--pos' : 'mkt-hv--neg') : ''}`}>
-                                        {selHolding ? `${selHolding.profitLoss >= 0 ? '+' : ''}$${selHolding.profitLoss.toFixed(2)}` : '—'}
-                                    </strong>
+                                    <strong className="mkt-hv">—</strong>
                                 </div>
                             </div>
                             <hr className="mkt-divider" />
