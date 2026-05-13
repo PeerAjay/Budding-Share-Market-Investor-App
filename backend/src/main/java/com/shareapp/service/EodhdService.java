@@ -64,25 +64,6 @@ public class EodhdService {
         return restTemplate.getForObject(url, EodhdStockPriceDTO.class);
     }
 
-    @Scheduled(cron = "0 0 18 * * MON-FRI", zone = "America/New_York")
-    public void updateStockPricesEveryNinetyMinutes() {
-        List<Stock> stocks = stocksRepository.findAll();
-
-        for (Stock stock : stocks) {
-            try {
-                String eodhdSymbol = toEodhdSymbol(stock.getSymbol());
-                EodhdStockPriceDTO priceData = fetchStockPrice(eodhdSymbol);
-
-                if (priceData != null && priceData.getClose() != null) {
-                    stock.setCurrentPrice(priceData.getClose().doubleValue());
-                    stocksRepository.save(stock);
-                }
-            } catch (Exception exception) {
-                System.err.println("Failed to update price for stock: " + stock.getSymbol());
-                System.err.println(exception.getMessage());
-            }
-        }
-    }
 
     private String toEodhdSymbol(String symbol) {
         if (symbol.contains(".")) {
@@ -92,12 +73,13 @@ public class EodhdService {
         return symbol + ".US";
     }
 
-    @Scheduled(cron = "0 0 18 * * MON-FRI", zone = "Australia/Sydney")
-    public void updateTrackedStockPricesOncePerDay() {
+    @Scheduled(cron = "${stock-price-update.cron}", zone = "Australia/Sydney")
+    public void updateTrackedStockPrices() {
         for (String symbol : TRACKED_STOCK_SYMBOLS) {
             updateStockPrice(symbol);
         }
     }
+
 
     private void updateStockPrice(String symbol) {
         try {
