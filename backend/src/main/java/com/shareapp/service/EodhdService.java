@@ -1,8 +1,12 @@
 package com.shareapp.service;
 
+import java.time.LocalDateTime;
+
 import com.shareapp.DataTransferObjects.EodhdStockPriceDTO;
 import com.shareapp.model.Stock;
+import com.shareapp.model.StockPriceHistory;
 import com.shareapp.repository.StocksRepository;
+import com.shareapp.repository.StockPriceHistoryRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -38,7 +42,7 @@ public class EodhdService {
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final StocksRepository stocksRepository;
-
+    private final StockPriceHistoryRepository stockPriceHistoryRepository;
 
     @Value("${eodhd.api.key}")
     private String apiKey;
@@ -46,8 +50,12 @@ public class EodhdService {
     @Value("${eodhd.base-url}")
     private String baseUrl;
 
-    public EodhdService(StocksRepository stocksRepository) {
+    public EodhdService(
+            StocksRepository stocksRepository,
+            StockPriceHistoryRepository stockPriceHistoryRepository
+    ) {
         this.stocksRepository = stocksRepository;
+        this.stockPriceHistoryRepository = stockPriceHistoryRepository;
     }
 
     public EodhdStockPriceDTO fetchStockPrice(String symbol) {
@@ -101,6 +109,8 @@ public class EodhdService {
             }
 
             String localSymbol = symbol.replace(".US", "");
+            double latestPrice = priceData.getClose().doubleValue();
+
             Stock stock = stocksRepository.findBySymbol(localSymbol);
 
             if (stock == null) {
@@ -109,8 +119,16 @@ public class EodhdService {
                 stock.setCompanyName(localSymbol);
             }
 
-            stock.setCurrentPrice(priceData.getClose().doubleValue());
-            stocksRepository.save(stock);
+            stock.setCurrentPrice(latestPrice);
+            Stock savedStock = stocksRepository.save(stock);
+
+            StockPriceHistory priceHistory = new StockPriceHistory(
+                    savedStock,
+                    latestPrice,
+                    LocalDateTime.now()
+            );
+
+            stockPriceHistoryRepository.save(priceHistory);
         } catch (Exception exception) {
             System.err.println("Failed to fetch/save stock: " + symbol);
             System.err.println(exception.getMessage());
