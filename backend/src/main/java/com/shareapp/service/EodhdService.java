@@ -84,7 +84,7 @@ public class EodhdService {
         return symbol + ".US";
     }
 
-    @Scheduled(cron = "0 0 18 * * MON-FRI", zone = "America/New_York")
+    @Scheduled(cron = "0 0 18 * * MON-FRI", zone = "Australia/Sydney")
     public void updateTrackedStockPricesOncePerDay() {
         for (String symbol : TRACKED_STOCK_SYMBOLS) {
             updateStockPrice(symbol);
@@ -92,7 +92,28 @@ public class EodhdService {
     }
 
     private void updateStockPrice(String symbol) {
-        // Call EODHD API here
-        // Save returned price to your Stock table
+        try {
+            EodhdStockPriceDTO priceData = fetchStockPrice(symbol);
+
+            if (priceData == null || priceData.getClose() == null) {
+                System.err.println("No price data returned for stock: " + symbol);
+                return;
+            }
+
+            String localSymbol = symbol.replace(".US", "");
+            Stock stock = stocksRepository.findBySymbol(localSymbol);
+
+            if (stock == null) {
+                stock = new Stock();
+                stock.setSymbol(localSymbol);
+                stock.setCompanyName(localSymbol);
+            }
+
+            stock.setCurrentPrice(priceData.getClose().doubleValue());
+            stocksRepository.save(stock);
+        } catch (Exception exception) {
+            System.err.println("Failed to fetch/save stock: " + symbol);
+            System.err.println(exception.getMessage());
+        }
     }
 }

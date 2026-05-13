@@ -33,7 +33,7 @@ public class DummyData implements CommandLineRunner{
 
     @Override
     public void run(String... args) throws Exception {
-        seedStocks();
+//        seedStocks();
         seedUsers();
     }
 
