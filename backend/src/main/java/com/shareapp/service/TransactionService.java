@@ -1,21 +1,24 @@
 package com.shareapp.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.shareapp.model.Stock;
-import com.shareapp.repository.StocksRepository;
-import com.shareapp.repository.UserRepository;
-import com.shareapp.model.Holding;
-import com.shareapp.repository.HoldingRepository;
-import com.shareapp.model.TradingAccount;
-import com.shareapp.repository.TradingAccountRepository;
-import com.shareapp.model.StockPriceHistory;
-import com.shareapp.repository.StockPriceHistoryRepository;
-import com.shareapp.model.Transaction;
-import com.shareapp.repository.TransactionRepository;
+import com.shareapp.DataTransferObjects.TransactionHistoryItemDTO;
 import com.shareapp.DataTransferObjects.TransactionResponseDTO;
-
+import com.shareapp.model.Holding;
+import com.shareapp.model.Stock;
+import com.shareapp.model.StockPriceHistory;
+import com.shareapp.model.TradingAccount;
+import com.shareapp.model.Transaction;
+import com.shareapp.repository.HoldingRepository;
+import com.shareapp.repository.StockPriceHistoryRepository;
+import com.shareapp.repository.StocksRepository;
+import com.shareapp.repository.TradingAccountRepository;
+import com.shareapp.repository.TransactionRepository;
+import com.shareapp.repository.UserRepository;
 
 @Service
 public class TransactionService {
@@ -26,12 +29,15 @@ public class TransactionService {
     private final StockPriceHistoryRepository stocksPriceHistoryRepository;
     private final TransactionRepository transactionRepository;
 
-    //Hardcoded brokerage fee CHANGE IF NEEDED
     private static final double BROKERAGE_FEE = 10.0;
 
-    public TransactionService(StocksRepository stocksRepository, UserRepository userRepository, 
-        HoldingRepository holdingRepository, TradingAccountRepository tradingAccountRepository, 
-        StockPriceHistoryRepository stocksPriceHistoryRepository, TransactionRepository transactionRepository) {
+    public TransactionService(
+            StocksRepository stocksRepository,
+            UserRepository userRepository,
+            HoldingRepository holdingRepository,
+            TradingAccountRepository tradingAccountRepository,
+            StockPriceHistoryRepository stocksPriceHistoryRepository,
+            TransactionRepository transactionRepository) {
 
         this.stocksRepository = stocksRepository;
         this.userRepository = userRepository;
@@ -43,14 +49,16 @@ public class TransactionService {
 
     @Transactional
     public TransactionResponseDTO buyShare(Long accountId, String stockSymbol, int quantity) {
-        TradingAccount account = tradingAccountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
+        TradingAccount account = tradingAccountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
         Stock stock = stocksRepository.findBySymbol(stockSymbol);
         if (stock == null) {
             throw new RuntimeException("Stock not found");
         }
 
-        //Getting the latest price of the stock
-        StockPriceHistory latestPrice = stocksPriceHistoryRepository.findTopByStockSymbolOrderByTimestampDesc(stock.getSymbol());
+        StockPriceHistory latestPrice =
+                stocksPriceHistoryRepository.findTopByStockSymbolOrderByTimestampDesc(stock.getSymbol());
 
         double totalCost = quantity * latestPrice.getPrice() + BROKERAGE_FEE;
 
@@ -58,26 +66,25 @@ public class TransactionService {
             throw new RuntimeException("Insufficient balance");
         }
 
-        // Deduct the cost from the account balance
         account.setBalance(account.getBalance().subtract(new java.math.BigDecimal(totalCost)));
 
         Holding holding = holdingRepository.findByAccountAndStock(account, stock);
 
         if (holding == null) {
             holding = new Holding(account, stock, quantity, latestPrice.getPrice());
-        } 
-        else {
-            holding.setAverageBuyPrice((holding.getAverageBuyPrice() * holding.getQuantity() + latestPrice.getPrice() * quantity) / (holding.getQuantity() + quantity));
+        } else {
+            holding.setAverageBuyPrice(
+                    (holding.getAverageBuyPrice() * holding.getQuantity()
+                            + latestPrice.getPrice() * quantity)
+                            / (holding.getQuantity() + quantity)
+            );
             holding.setQuantity(holding.getQuantity() + quantity);
-        }   
+        }
 
-        // Add the holding
         holdingRepository.save(holding);
-
-        // Add the BUY Transaction
-        transactionRepository.save(new Transaction("BUY", account, stock, quantity, latestPrice.getPrice(), BROKERAGE_FEE));
-
-        //Saving the account
+        transactionRepository.save(
+                new Transaction("BUY", account, stock, quantity, latestPrice.getPrice(), BROKERAGE_FEE)
+        );
         tradingAccountRepository.save(account);
 
         return new TransactionResponseDTO("Stock purchased successfully", account.getBalance());
@@ -85,24 +92,27 @@ public class TransactionService {
 
     @Transactional
     public TransactionResponseDTO sellShare(Long accountId, String stockSymbol, int quantity) {
-        TradingAccount account = tradingAccountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
+        TradingAccount account = tradingAccountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
         Stock stock = stocksRepository.findBySymbol(stockSymbol);
         if (stock == null) {
             throw new RuntimeException("Stock not found");
         }
+
         Holding holding = holdingRepository.findByAccountAndStock(account, stock);
 
-        //Getting the latest price of the stock
-        StockPriceHistory latestPrice = stocksPriceHistoryRepository.findTopByStockSymbolOrderByTimestampDesc(stock.getSymbol());
+        StockPriceHistory latestPrice =
+                stocksPriceHistoryRepository.findTopByStockSymbolOrderByTimestampDesc(stock.getSymbol());
 
-        if(holding == null || holding.getQuantity() < quantity) {
+        if (holding == null || holding.getQuantity() < quantity) {
             throw new RuntimeException("Not enough shares to sell");
         }
 
-        //Adding the funds from selling back intot he account, minus the brokerage fee
-        account.setBalance(account.getBalance().add(new java.math.BigDecimal(quantity * latestPrice.getPrice() - BROKERAGE_FEE)));
+        account.setBalance(
+                account.getBalance().add(new java.math.BigDecimal(quantity * latestPrice.getPrice() - BROKERAGE_FEE))
+        );
 
-        //Deleitng the holding object if all the shares are sold, if theres some left then update the quantity and save
         if (holding.getQuantity() == quantity) {
             holdingRepository.delete(holding);
         } else {
@@ -110,13 +120,31 @@ public class TransactionService {
             holdingRepository.save(holding);
         }
 
-        //Adding the SELL transaction
-        transactionRepository.save(new Transaction("SELL", account, stock, quantity, latestPrice.getPrice(), BROKERAGE_FEE));
-
-        //Saving the account
+        transactionRepository.save(
+                new Transaction("SELL", account, stock, quantity, latestPrice.getPrice(), BROKERAGE_FEE)
+        );
         tradingAccountRepository.save(account);
+
         return new TransactionResponseDTO("Stock sold successfully", account.getBalance());
     }
-    
 
+    public List<TransactionHistoryItemDTO> getTransactionsByAccount(Long accountId) {
+        TradingAccount account = tradingAccountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        return transactionRepository.findByAccountId(account.getId()).stream()
+                .sorted((a, b) -> b.getTimestamp().compareTo(a.getTimestamp()))
+                .map(transaction -> new TransactionHistoryItemDTO(
+                        transaction.getId(),
+                        transaction.getStock().getSymbol(),
+                        transaction.getStock().getCompanyName(),
+                        transaction.getType(),
+                        transaction.getQuantity(),
+                        transaction.getPrice_at_transaction(),
+                        transaction.getBrokerage_fee(),
+                        transaction.getTotal_value(),
+                        transaction.getTimestamp()
+                ))
+                .collect(Collectors.toList());
+    }
 }

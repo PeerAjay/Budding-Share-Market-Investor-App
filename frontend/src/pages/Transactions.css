@@ -1,0 +1,248 @@
+.transactions-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(79, 70, 229, 0.1), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.1), transparent 24%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+}
+
+.transactions-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.transactions-eyebrow {
+  color: #4f46e5;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+}
+
+.transactions-title {
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.transactions-subtitle {
+  color: #64748b;
+  max-width: 720px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.transactions-badge {
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  color: #334155;
+  border-radius: 18px;
+  padding: 1rem 1.2rem;
+  min-width: 180px;
+  font-weight: 600;
+}
+
+.transactions-badge span {
+  display: block;
+  color: #16a34a;
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin-top: 0.25rem;
+}
+
+.transactions-card {
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  height: 100%;
+}
+
+.summary-card {
+  min-height: 165px;
+}
+
+.summary-label {
+  color: #64748b;
+  font-size: 0.95rem;
+  margin-bottom: 0.7rem;
+}
+
+.summary-value {
+  color: #0f172a;
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 0.55rem;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.summary-note {
+  color: #64748b;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.transactions-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.transactions-section-title {
+  color: #0f172a;
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+}
+
+.transactions-section-subtitle {
+  color: #64748b;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.transactions-controls {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 1rem;
+}
+
+.transactions-control-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.transactions-label {
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.5rem;
+}
+
+.transactions-select {
+  border-radius: 14px;
+  padding: 0.8rem 1rem;
+  border: 1px solid #dbe2ea;
+  background: #f8fafc;
+  box-shadow: none;
+}
+
+.transactions-select:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.12);
+}
+
+.transactions-table thead th {
+  color: #64748b;
+  font-weight: 700;
+  border-bottom: 1px solid #e2e8f0;
+  background: transparent;
+}
+
+.transactions-table tbody td {
+  color: #0f172a;
+  border-color: #eef2f7;
+}
+
+.transaction-stock-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.transaction-stock-cell strong {
+  color: #0f172a;
+}
+
+.transaction-stock-cell span {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.transaction-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 64px;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.buy-pill {
+  background: rgba(22, 163, 74, 0.12);
+  color: #15803d;
+}
+
+.sell-pill {
+  background: rgba(220, 38, 38, 0.12);
+  color: #b91c1c;
+}
+
+.transactions-btn {
+  border: none;
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
+  color: #ffffff;
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.transactions-btn:hover {
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+}
+
+.empty-state-card,
+.empty-transactions-state {
+  text-align: center;
+}
+
+.empty-transactions-state {
+  padding: 2rem 1rem;
+  background: #f8fafc;
+  border-radius: 18px;
+}
+
+.empty-transactions-state h4 {
+  color: #0f172a;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.empty-transactions-state p {
+  color: #64748b;
+  margin: 0;
+}
+
+@media (max-width: 992px) {
+  .transactions-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .transactions-badge {
+    min-width: unset;
+  }
+}
+
+@media (max-width: 768px) {
+  .transactions-title {
+    font-size: 1.9rem;
+  }
+
+  .transactions-controls {
+    grid-template-columns: 1fr;
+  }
+}
