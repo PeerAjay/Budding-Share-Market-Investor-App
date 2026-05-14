@@ -1,5 +1,6 @@
 package com.shareapp.controller;
 
+import com.shareapp.DataTransferObjects.LeaderboardResponseDTO;
 import com.shareapp.service.LeaderboardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +18,8 @@ public class LeaderboardController {
     }
 
     @GetMapping
-    public ResponseEntity<List<com.shareapp.DataTransferObjects.LeaderboardDTO>> getLeaderboard() {
-        return ResponseEntity.ok(leaderboardService.getLeaderboard());
+    public ResponseEntity<LeaderboardResponseDTO> getLeaderboard(@RequestParam Long userId) {
+        return ResponseEntity.ok(leaderboardService.getLeaderboard(userId));
     }
 
 }
