@@ -26,6 +26,9 @@ function NavigationBar({ user, onLogout }) {
         <Link to="/transactions" className="app-navbar__link">
           Transactions
         </Link>
+        <Link to="/leaderboard" className="app-navbar__link">
+          Leaderboard
+        </Link>
 
         <Link to="/profile" className="app-navbar__link">
           Profile
