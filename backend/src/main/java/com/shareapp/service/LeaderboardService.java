@@ -1,28 +1,35 @@
 package com.shareapp.service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.shareapp.DataTransferObjects.LeaderboardDTO;
-import com.shareapp.model.TradingAccount;
 import com.shareapp.model.User;
 import com.shareapp.repository.TradingAccountRepository;
-import com.shareapp.repository.UserRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LeaderboardService {
-    private final UserRepository userRepository;
     private final TradingAccountRepository tradingAccountRepository;
 
-    public LeaderboardService(UserRepository userRepository, TradingAccountRepository tradingAccountRepository) {
-        this.userRepository = userRepository;
+    public LeaderboardService(TradingAccountRepository tradingAccountRepository) {
         this.tradingAccountRepository = tradingAccountRepository;
     }
 
-    // public List<LeaderboardDTO> getLeaderboard() {
-        
-    // }
+    public List<LeaderboardDTO> getLeaderboard() {
+        List<Object[]> users = tradingAccountRepository.findUserTotalBalancesRanked();
+
+        List<LeaderboardDTO> leaderboard = new ArrayList<>();
+        for (int i = 0; i < users.size(); i++) {
+            User user = (User) users.get(i)[0];
+            BigDecimal totalBalance = (BigDecimal) users.get(i)[1];
+
+            leaderboard.add(new LeaderboardDTO(user.getUsername(), totalBalance, i + 1));
+        }
+
+    return leaderboard;
+    }
 
 }
