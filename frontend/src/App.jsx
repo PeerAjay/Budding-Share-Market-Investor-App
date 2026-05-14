@@ -7,6 +7,7 @@ import Profile from "./pages/Profile";
 import Portfolio from "./pages/Portfolio";
 import Market from "./pages/Market";
 import Transactions from "./pages/Transactions";
+import Leaderboard from "./pages/Leaderboard";
 import NavigationBar from "./components/NavigationBar";
 import { useAuth } from "./services/AuthContext";
 import "./App.css";
@@ -75,6 +76,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Transactions />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/leaderboard"
+          element={
+            <ProtectedRoute>
+              <Leaderboard />
             </ProtectedRoute>
           }
         />

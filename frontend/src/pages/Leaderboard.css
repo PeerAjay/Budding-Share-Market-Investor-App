@@ -1,0 +1,219 @@
+.leaderboard-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(79, 70, 229, 0.1), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.1), transparent 24%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+}
+
+.leaderboard-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.leaderboard-eyebrow {
+  color: #4f46e5;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+}
+
+.leaderboard-title {
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.leaderboard-subtitle {
+  color: #64748b;
+  max-width: 720px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.leaderboard-badge {
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  color: #334155;
+  border-radius: 18px;
+  padding: 1rem 1.2rem;
+  min-width: 180px;
+  font-weight: 600;
+}
+
+.leaderboard-badge span {
+  display: block;
+  color: #16a34a;
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin-top: 0.25rem;
+}
+
+.leaderboard-card {
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  height: 100%;
+}
+
+.leaderboard-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.leaderboard-section-title {
+  color: #0f172a;
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+}
+
+.leaderboard-section-subtitle {
+  color: #64748b;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.podium-card {
+  text-align: center;
+  padding-top: 2rem;
+}
+
+.podium-card--1 {
+  border: 1px solid rgba(234, 179, 8, 0.35);
+  background: linear-gradient(180deg, rgba(255, 251, 235, 0.95), rgba(255, 255, 255, 0.98));
+}
+
+.podium-card--2 {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+.podium-card--3 {
+  border: 1px solid rgba(180, 83, 9, 0.25);
+}
+
+.podium-rank {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #4f46e5;
+  margin-bottom: 1rem;
+}
+
+.podium-avatar,
+.leaderboard-user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
+  color: #ffffff;
+  font-weight: 800;
+  border-radius: 50%;
+}
+
+.podium-avatar {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 1rem;
+  font-size: 1.8rem;
+}
+
+.leaderboard-user-avatar {
+  width: 42px;
+  height: 42px;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.podium-name {
+  color: #0f172a;
+  font-weight: 800;
+  margin-bottom: 0.45rem;
+}
+
+.podium-value {
+  color: #16a34a;
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 0.4rem;
+}
+
+.podium-label {
+  color: #64748b;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.leaderboard-table thead th {
+  color: #64748b;
+  font-weight: 700;
+  border-bottom: 1px solid #e2e8f0;
+  background: transparent;
+}
+
+.leaderboard-table tbody td {
+  color: #0f172a;
+  border-color: #eef2f7;
+}
+
+.leaderboard-rank-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 62px;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(79, 70, 229, 0.1);
+  color: #4338ca;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.leaderboard-user-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.leaderboard-value {
+  font-weight: 800;
+  color: #16a34a !important;
+}
+
+.leaderboard-note {
+  text-align: center;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.empty-state-card {
+  text-align: center;
+}
+
+@media (max-width: 992px) {
+  .leaderboard-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .leaderboard-badge {
+    min-width: unset;
+  }
+}
+
+@media (max-width: 768px) {
+  .leaderboard-title {
+    font-size: 1.9rem;
+  }
+}
