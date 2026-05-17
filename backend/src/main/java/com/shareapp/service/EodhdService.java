@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class EodhdService {
@@ -38,6 +39,29 @@ public class EodhdService {
             "COST.US",
             "NKE.US",
             "XOM.US"
+    );
+
+    private static final Map<String, String> COMPANY_NAMES = Map.ofEntries(
+            Map.entry("AAPL",  "Apple Inc."),
+            Map.entry("MSFT",  "Microsoft Corporation"),
+            Map.entry("GOOGL", "Alphabet Inc."),
+            Map.entry("AMZN",  "Amazon.com Inc."),
+            Map.entry("META",  "Meta Platforms Inc."),
+            Map.entry("TSLA",  "Tesla Inc."),
+            Map.entry("NVDA",  "NVIDIA Corporation"),
+            Map.entry("NFLX",  "Netflix Inc."),
+            Map.entry("JPM",   "JPMorgan Chase & Co."),
+            Map.entry("BAC",   "Bank of America Corp."),
+            Map.entry("V",     "Visa Inc."),
+            Map.entry("MA",    "Mastercard Incorporated"),
+            Map.entry("DIS",   "The Walt Disney Company"),
+            Map.entry("KO",    "The Coca-Cola Company"),
+            Map.entry("PEP",   "PepsiCo Inc."),
+            Map.entry("MCD",   "McDonald's Corporation"),
+            Map.entry("WMT",   "Walmart Inc."),
+            Map.entry("COST",  "Costco Wholesale Corporation"),
+            Map.entry("NKE",   "Nike Inc."),
+            Map.entry("XOM",   "Exxon Mobil Corporation")
     );
 
     private final RestTemplate restTemplate = new RestTemplate();
@@ -98,8 +122,9 @@ public class EodhdService {
             if (stock == null) {
                 stock = new Stock();
                 stock.setSymbol(localSymbol);
-                stock.setCompanyName(localSymbol);
             }
+
+            stock.setCompanyName(COMPANY_NAMES.getOrDefault(localSymbol, localSymbol));
 
             stock.setCurrentPrice(latestPrice);
             Stock savedStock = stocksRepository.save(stock);

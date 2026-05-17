@@ -15,6 +15,9 @@ function Market() {
     const [accounts, setAccounts] = useState([])
     const [selAccount, setSelAccount] = useState('')
     const [buying, setBuying] = useState(false)
+    const [refreshing, setRefreshing] = useState(false)
+    const [refreshMsg, setRefreshMsg] = useState('')
+    const [holdings, setHoldings] = useState([])
 
     useEffect(() => {
         api.get('/stocks')
@@ -31,21 +34,44 @@ function Market() {
                 setAccounts(accs)
                 if (accs.length > 0) setSelAccount(accs[0].id)
             })
-            .catch(() => {})
+            .catch(() => { })
     }, [])
+
+    useEffect(() => {
+        if (!selAccount) return
+        api.get(`/portfolio/${selAccount}/holdings`)
+            .then(res => setHoldings(res.data || []))
+            .catch(() => setHoldings([]))
+    }, [selAccount])
 
     const AVATAR_BG = (symbol) => AVATAR_COLORS[(symbol?.charCodeAt(0) || 0) % AVATAR_COLORS.length]
 
     if (loading) return <div className="mkt-page"><div className="mkt-container"><p className="text-muted mt-4">Loading market data...</p></div></div>
     if (error) return <div className="mkt-page"><div className="mkt-container"><div className="alert alert-danger mt-4">{error}</div></div></div>
-    if (stocks.length === 0) return <div className="mkt-page"><div className="mkt-container"><p className="text-muted mt-4">No stocks available.</p></div></div>
 
-    const sel = stocks[selIdx]
+    const sel = stocks.length > 0 ? stocks[selIdx] : null
     const qtyValue = Number.parseInt(qty, 10)
     const hasValidQty = Number.isInteger(qtyValue) && qtyValue > 0
     const est = hasValidQty && sel?.currentPrice != null
         ? (qtyValue * sel.currentPrice + BROKERAGE_FEE).toFixed(2)
         : '0.00'
+
+    const handleRefresh = async () => {
+        setRefreshing(true)
+        setRefreshMsg('')
+        try {
+            await api.post('/stocks/refresh')
+            const res = await api.get('/stocks')
+            setStocks(res.data || [])
+            setRefreshMsg('Stocks updated successfully.')
+            setTimeout(() => setRefreshMsg(''), 3000)
+        } catch {
+            setRefreshMsg('Failed to refresh stocks.')
+            setTimeout(() => setRefreshMsg(''), 3000)
+        } finally {
+            setRefreshing(false)
+        }
+    }
 
     const handleBuy = async () => {
         setError('')
@@ -94,6 +120,9 @@ function Market() {
             if (updatedAccount) {
                 setSelAccount(String(updatedAccount.id))
             }
+
+            const refreshedHoldings = await api.get(`/portfolio/${selAccount}/holdings`)
+            setHoldings(refreshedHoldings.data || [])
         } catch (err) {
             setError(err?.response?.data || 'Failed to buy shares.')
         } finally {
@@ -117,28 +146,35 @@ function Market() {
 
                         <div className="mkt-card mkt-card--sel">
                             <div className="mkt-lbl mkt-lbl--sel">SELECTED STOCK</div>
-                            <div className="mkt-sel-row">
-                                <div className="mkt-av" style={{ background: AVATAR_BG(sel.symbol) }}>{sel.symbol}</div>
-                                <div className="mkt-sel-body">
-                                    <div className="mkt-sel-name">{sel.companyName}</div>
-                                    <div className="mkt-sel-price">${sel.currentPrice != null ? sel.currentPrice.toFixed(2) : '—'} <span className="mkt-sel-meta">per share · ASX Listed</span></div>
-                                    <select
-                                        className="form-select mkt-stock-sel"
-                                        value={selIdx}
-                                        onChange={e => setSelIdx(Number(e.target.value))}
-                                    >
-                                        {stocks.map((s, i) => (
-                                            <option key={s.symbol} value={i}>
-                                                {s.symbol} — {s.companyName}
-                                            </option>
-                                        ))}
-                                    </select>
+                            {sel ? (
+                                <div className="mkt-sel-row">
+                                    <div className="mkt-av" style={{ background: AVATAR_BG(sel.symbol) }}>{sel.symbol}</div>
+                                    <div className="mkt-sel-body">
+                                        <div className="mkt-sel-name">{sel.companyName}</div>
+                                        <div className="mkt-sel-price">${sel.currentPrice != null ? sel.currentPrice.toFixed(2) : '—'} <span className="mkt-sel-meta">per share · ASX Listed</span></div>
+                                        <select
+                                            className="form-select mkt-stock-sel"
+                                            value={selIdx}
+                                            onChange={e => setSelIdx(Number(e.target.value))}
+                                        >
+                                            {stocks.map((s, i) => (
+                                                <option key={s.symbol} value={i}>
+                                                    {s.symbol} — {s.companyName}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
+                            ) : (
+                                <div className="mkt-empty-sel">
+                                    <p className="mkt-empty-sel-txt">No stocks available</p>
+                                    <p className="mkt-empty-sel-hint">Click <strong>↻ Refresh</strong> in the table below to load market data.</p>
+                                </div>
+                            )}
                         </div>
 
-                        <div className="mkt-trade">
-                            <div className="mkt-trade-ttl">Trade Execution: {sel.companyName}</div>
+                        <div className="mkt-trade" style={!sel ? { opacity: 0.4, pointerEvents: 'none' } : {}}>
+                            <div className="mkt-trade-ttl">Trade Execution: {sel ? sel.companyName : '—'}</div>
                             <div className="mkt-tgrid mkt-tgrid--top">
                                 <div>
                                     <div className="mkt-tlbl">SELECT ACCOUNT</div>
@@ -193,32 +229,48 @@ function Market() {
                         </div>
 
                         <div className="mkt-tbl-wrap">
-                            <div className="mkt-tbl-hdr">All Stocks</div>
+                            <div className="mkt-tbl-hdr">
+                                <span>All Stocks</span>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                                    {refreshMsg && (
+                                        <span className={`mkt-refresh-msg${refreshMsg.includes('successfully') ? ' mkt-refresh-msg--ok' : ' mkt-refresh-msg--err'}`}>
+                                            {refreshMsg}
+                                        </span>
+                                    )}
+                                    <button className="mkt-refresh-btn" type="button" onClick={handleRefresh} disabled={refreshing}>
+                                        {refreshing ? 'Refreshing...' : 'Refresh'}
+                                    </button>
+                                </div>
+                            </div>
                             <div className="table-responsive">
                                 <table className="table mkt-dtbl align-middle mb-0">
                                     <thead>
-                                    <tr>
-                                        <th>TICKER</th>
-                                        <th>COMPANY</th>
-                                        <th>PRICE</th>
-                                        <th>24H CHANGE</th>
-                                        <th>ACTIONS</th>
-                                    </tr>
+                                        <tr>
+                                            <th>TICKER</th>
+                                            <th>COMPANY</th>
+                                            <th>PRICE</th>
+                                            <th>ACTIONS</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    {stocks.map((s, i) => (
-                                        <tr key={s.symbol} className={i === selIdx ? 'mkt-tr-sel' : ''} onClick={() => setSelIdx(i)} style={{ cursor: 'pointer' }}>
-                                            <td><span className="mkt-ticker">{s.symbol}</span></td>
-                                            <td className="mkt-tco">{s.companyName}</td>
-                                            <td className="mkt-tpr">${s.currentPrice != null ? s.currentPrice.toFixed(2) : '—'}</td>
-                                            <td><span className="mkt-tch">—</span></td>
-                                            <td>
-                                                <button type="button" className="mkt-alz" onClick={e => { e.stopPropagation(); setSelIdx(i) }}>
-                                                    + Add Stock
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                        {stocks.length === 0 ? (
+                                            <tr>
+                                                <td colSpan={4} className="mkt-empty-row">
+                                                    No market data available. Click <strong>↻ Refresh</strong> to fetch the latest stock prices.
+                                                </td>
+                                            </tr>
+                                        ) : stocks.map((s, i) => (
+                                            <tr key={s.symbol} className={i === selIdx ? 'mkt-tr-sel' : ''} onClick={() => setSelIdx(i)} style={{ cursor: 'pointer' }}>
+                                                <td><span className="mkt-ticker">{s.symbol}</span></td>
+                                                <td className="mkt-tco">{s.companyName}</td>
+                                                <td className="mkt-tpr">${s.currentPrice != null ? s.currentPrice.toFixed(2) : '—'}</td>
+                                                <td>
+                                                    <button type="button" className="mkt-alz" onClick={e => { e.stopPropagation(); setSelIdx(i) }}>
+                                                        + Add Stock
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
@@ -230,22 +282,34 @@ function Market() {
                         <div className="mkt-hcard">
                             <div className="mkt-hd">
                                 <h3 className="mkt-ht">My Holdings</h3>
+                                {sel && <span className="mkt-ht-sub">{sel.symbol}</span>}
                             </div>
                             <hr className="mkt-divider" />
-                            <div className="mkt-hrows">
-                                <div className="mkt-hrow">
-                                    <span className="mkt-hl">QUANTITY</span>
-                                    <strong className="mkt-hv">—</strong>
-                                </div>
-                                <div className="mkt-hrow">
-                                    <span className="mkt-hl">AVERAGE COST</span>
-                                    <strong className="mkt-hv">—</strong>
-                                </div>
-                                <div className="mkt-hrow">
-                                    <span className="mkt-hl">CURRENT VALUE</span>
-                                    <strong className="mkt-hv">—</strong>
-                                </div>
-                            </div>
+                            {(() => {
+                                const h = sel ? holdings.find(x => x.stockSymbol === sel.symbol) : null
+                                return (
+                                    <div className="mkt-hrows">
+                                        <div className="mkt-hrow">
+                                            <span className="mkt-hl">QUANTITY</span>
+                                            <strong className="mkt-hv">{h ? h.quantity : '—'}</strong>
+                                        </div>
+                                        <div className="mkt-hrow">
+                                            <span className="mkt-hl">AVERAGE COST</span>
+                                            <strong className="mkt-hv">{h?.averageBuyPrice != null ? `$${h.averageBuyPrice.toFixed(2)}` : '—'}</strong>
+                                        </div>
+                                        <div className="mkt-hrow">
+                                            <span className="mkt-hl">CURRENT VALUE</span>
+                                            <strong className="mkt-hv">{h?.currentValue != null ? `$${h.currentValue.toFixed(2)}` : '—'}</strong>
+                                        </div>
+                                        <div className="mkt-hrow">
+                                            <span className="mkt-hl">PROFIT / LOSS</span>
+                                            <strong className={`mkt-hv${h?.profitLoss != null ? (h.profitLoss >= 0 ? ' mkt-hv--pos' : ' mkt-hv--neg') : ''}`}>
+                                                {h?.profitLoss != null ? `${h.profitLoss >= 0 ? '+' : ''}$${h.profitLoss.toFixed(2)}` : '—'}
+                                            </strong>
+                                        </div>
+                                    </div>
+                                )
+                            })()}
                             <hr className="mkt-divider" />
                             <div className="mkt-hft">
                                 <a href="/portfolio" className="mkt-plink">View Full Portfolio Details</a>

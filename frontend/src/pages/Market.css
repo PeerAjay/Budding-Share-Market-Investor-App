@@ -373,6 +373,74 @@
   font-weight: 700;
   color: #0f172a;
   border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mkt-refresh-btn {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #4f46e5;
+  background: none;
+  border: 1px solid #c7d2fe;
+  border-radius: 6px;
+  padding: 0.25rem 0.65rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.mkt-refresh-btn:hover {
+  background: #eef2ff;
+  color: #3730a3;
+}
+
+.mkt-refresh-msg {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.mkt-refresh-msg--ok {
+  color: #16a34a;
+}
+
+.mkt-refresh-msg--err {
+  color: #dc2626;
+}
+
+/* ─── Empty states ─── */
+.mkt-empty-sel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  text-align: center;
+  gap: 0.4rem;
+}
+
+.mkt-empty-sel-icon {
+  font-size: 2.2rem;
+}
+
+.mkt-empty-sel-txt {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #334155;
+  margin: 0;
+}
+
+.mkt-empty-sel-hint {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.mkt-empty-row {
+  text-align: center;
+  padding: 2rem !important;
+  color: #64748b;
+  font-size: 0.88rem;
 }
 
 .mkt-dtbl {
