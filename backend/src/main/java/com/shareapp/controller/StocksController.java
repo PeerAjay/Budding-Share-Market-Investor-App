@@ -1,6 +1,7 @@
 package com.shareapp.controller;
 
 import com.shareapp.model.Stock;
+import com.shareapp.model.StockPriceHistory;
 import com.shareapp.service.EodhdService;
 import com.shareapp.service.StocksService;
 import org.springframework.http.ResponseEntity;
@@ -29,5 +30,14 @@ public class StocksController {
     public ResponseEntity<String> refreshStocks() {
         eodhdService.updateTrackedStockPrices();
         return ResponseEntity.ok("Stocks updated successfully.");
+    }
+
+    @GetMapping("/{symbol}/history")
+    public ResponseEntity<List<StockPriceHistory>> getStockHistory(@PathVariable String symbol) {
+        try {
+            return ResponseEntity.ok(stocksService.getStockPriceHistory(symbol));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 }
