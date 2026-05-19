@@ -1,5 +1,6 @@
 package com.shareapp.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -126,6 +127,26 @@ public class TransactionService {
         tradingAccountRepository.save(account);
 
         return new TransactionResponseDTO("Stock sold successfully", account.getBalance());
+    }
+
+    public List<TransactionHistoryItemDTO> getTransactionsByDateRange(Long accountId, LocalDateTime start, LocalDateTime end) {
+        tradingAccountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        return transactionRepository.findByAccountIdAndTimestampBetween(accountId, start, end).stream()
+                .sorted((a, b) -> b.getTimestamp().compareTo(a.getTimestamp()))
+                .map(transaction -> new TransactionHistoryItemDTO(
+                        transaction.getId(),
+                        transaction.getStock().getSymbol(),
+                        transaction.getStock().getCompanyName(),
+                        transaction.getType(),
+                        transaction.getQuantity(),
+                        transaction.getPrice_at_transaction(),
+                        transaction.getBrokerage_fee(),
+                        transaction.getTotal_value(),
+                        transaction.getTimestamp()
+                ))
+                .collect(Collectors.toList());
     }
 
     public List<TransactionHistoryItemDTO> getTransactionsByAccount(Long accountId) {
