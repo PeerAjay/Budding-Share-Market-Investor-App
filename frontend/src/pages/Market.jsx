@@ -15,6 +15,7 @@ function Market() {
     const [accounts, setAccounts] = useState([])
     const [selAccount, setSelAccount] = useState('')
     const [buying, setBuying] = useState(false)
+    const [selling, setSelling] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
     const [refreshMsg, setRefreshMsg] = useState('')
     const [holdings, setHoldings] = useState([])
@@ -74,6 +75,62 @@ function Market() {
             setTimeout(() => setRefreshMsg(''), 3000)
         } finally {
             setRefreshing(false)
+        }
+    }
+
+    const handleSell = async () => {
+        setError('')
+        setSuccessMessage('')
+
+        if (!selAccount) {
+            setError('Select a trading account first.')
+            return
+        }
+
+        if (!hasValidQty) {
+            setError('Enter a valid share quantity.')
+            return
+        }
+
+        if (!sel?.symbol) {
+            setError('Select a stock to sell.')
+            return
+        }
+
+        const holding = holdings.find(h => h.stockSymbol === sel.symbol)
+        if (!holding || holding.quantity < qtyValue) {
+            setError(`You don't have enough shares of ${sel.symbol} to sell.`)
+            return
+        }
+
+        setSelling(true)
+
+        try {
+            await api.post('/transactions/sell', {
+                accountId: Number(selAccount),
+                stockSymbol: sel.symbol,
+                quantity: qtyValue
+            })
+
+            setSuccessMessage(`Sold ${qtyValue} share${qtyValue === 1 ? '' : 's'} of ${sel.symbol}.`)
+            setQty('')
+
+            const refreshedAccounts = await api.get('/dashboard/accounts')
+            const accs = refreshedAccounts.data || []
+            setAccounts(accs)
+
+            const updatedAccount = accs.find(acc => String(acc.id) === String(selAccount))
+            if (updatedAccount) {
+                setSelAccount(String(updatedAccount.id))
+            }
+
+            const refreshedHoldings = await api.get(`/portfolio/${selAccount}/holdings`)
+            setHoldings(refreshedHoldings.data || [])
+        } catch (err) {
+            setError(err?.response?.data || 'Failed to sell shares.')
+        } finally {
+            setSelling(false)
+            setTimeout(() => setSuccessMessage(''), 2500)
         }
     }
 
@@ -221,7 +278,9 @@ function Market() {
                                     <button className="mkt-buy" type="button" onClick={handleBuy} disabled={buying || !selAccount || !hasValidQty}>
                                         {buying ? 'Buying...' : 'Buy'}
                                     </button>
-                                    <button className="mkt-sell">Sell</button>
+                                    <button className="mkt-sell" type="button" onClick={handleSell} disabled={selling || !selAccount || !hasValidQty}>
+                                        {selling ? 'Selling...' : 'Sell'}
+                                    </button>
                                 </div>
                             </div>
                             {(error || successMessage) && (
