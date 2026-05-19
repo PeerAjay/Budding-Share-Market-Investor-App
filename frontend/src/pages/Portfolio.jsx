@@ -178,9 +178,9 @@ function Portfolio() {
                     value={selectedAccountId}
                     onChange={(e) => setSelectedAccountId(e.target.value)}
                   >
-                    {accounts.map((account) => (
+                    {accounts.map((account, index) => (
                       <option key={account.id} value={account.id}>
-                        {account.accountName} - #{account.id}
+                        {account.accountName} - #{index + 1}
                       </option>
                     ))}
                   </select>
