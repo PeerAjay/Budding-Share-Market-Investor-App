@@ -2,7 +2,7 @@
 COSC2408 Semester 1 2026 | VS666 | Budding Share Market Investor App 
 
 ## About 
-- To do!
+A simulated share market investment app where users can create trading accounts, buy and sell stocks using live market data, track their portfolio performance, and compete on a leaderboard.
 
 ## Members
 - Ajay Peeris: S4088958@student.rmit.edu.au
@@ -13,11 +13,11 @@ COSC2408 Semester 1 2026 | VS666 | Budding Share Market Investor App
 
 ## Tech Stack
 ### Frontend 
-- React 
+- React (Vite)
 ### Backend
-- SpringBoot
+- Spring Boot
 - Database: PostgreSQL
-- Stock price data: [Twelve Data API](https://twelvedata.com)
+- Stock price data: [EODHD API](https://eodhd.com)
 
 ## Installation
 
@@ -25,16 +25,16 @@ COSC2408 Semester 1 2026 | VS666 | Budding Share Market Investor App
 - [Node.js](https://nodejs.org/en/download) (npm is included)
 - [Java 17+](https://adoptium.net/)
 - [Maven](https://maven.apache.org/install.html)
-- [PostgreSQL 18](https://www.postgresql.org/download/)
+- [PostgreSQL](https://www.postgresql.org/download/)
 
 ### 1. Database Setup (PostgreSQL)
 
-**Install PostgreSQL 18**
+**Install PostgreSQL**
 
 macOS (Homebrew):
 ```
-brew install postgresql@18
-brew services start postgresql@18
+brew install postgresql
+brew services start postgresql
 ```
 
 Windows:
@@ -83,21 +83,21 @@ Default admin credentials — `admin@shareapp.com` / `Admin123!`
 
 **Set up environment variables**
 
-The backend requires a [Twelve Data](https://twelvedata.com) API key for live stock prices. Get a free API key from their website, then set it in your terminal before starting the backend.
+The backend requires an [EODHD](https://eodhd.com) API key for live stock prices. Get a free API key from their website, then set it in your terminal before starting the backend.
 
 macOS:
 ```
-export TWELVEDATA_API_KEY=your_api_key_here
+export EODHD_API_KEY=your_api_key_here
 ```
 
 Windows (Command Prompt):
 ```
-set TWELVEDATA_API_KEY=your_api_key_here
+set EODHD_API_KEY=your_api_key_here
 ```
 
 Windows (PowerShell):
 ```
-$env:TWELVEDATA_API_KEY="your_api_key_here"
+$env:EODHD_API_KEY="your_api_key_here"
 ```
 
 > This must be set every time you open a new terminal. To avoid this, add it to your shell profile (`~/.zshrc` on macOS) or Windows environment variables in System Settings.
@@ -108,6 +108,15 @@ cd backend
 mvn spring-boot:run
 ```
 Runs on `http://localhost:8080`.
+
+**Stock price updates**
+
+Stock prices are fetched from EODHD and saved to the database on a scheduled cron job (default: 2:55 AM Sydney time, after US market close). To trigger a manual update:
+```
+curl -X POST http://localhost:8080/api/stocks/refresh
+```
+
+To change the schedule, edit `stock-price-update.cron` in `backend/src/main/resources/application.properties`. Format: `second minute hour * * *` (24-hour, Sydney time).
 
 ### 3. Frontend
 ```
@@ -122,36 +131,55 @@ Open the localhost link shown in the terminal.
 ```
 backend/
 ├── pom.xml
-├── src/main/java/com/shareapp/
-│   ├── config/                              # Setup and security
-│   ├── controller/                          # Endpoints
-│   ├── data/                                # Requests and responses
-│   ├── model/                               # Database tables
-│   ├── repository/                          # Database queries
-│   ├── service/                             # Business logic
-│   └── BuddingShareMarketApplication.java
-└── src/main/resources/
-    └── application.properties
+└── src/main/java/com/shareapp/
+    ├── config/                              # Setup and security
+    ├── controller/                          # REST endpoints
+    │   ├── AuthController.java
+    │   ├── DashboardController.java
+    │   ├── LeaderboardController.java
+    │   ├── PortfolioController.java
+    │   ├── StocksController.java
+    │   ├── TransactionController.java
+    │   └── UserController.java
+    ├── DataTransferObjects/                 # Request/response DTOs
+    ├── model/                               # Database entities
+    │   ├── Holding.java
+    │   ├── Stock.java
+    │   ├── StockPriceHistory.java
+    │   ├── TradingAccount.java
+    │   ├── Transaction.java
+    │   └── User.java
+    ├── repository/                          # Database queries
+    ├── security/                            # JWT auth
+    ├── service/                             # Business logic
+    │   ├── EodhdService.java
+    │   ├── LeaderboardService.java
+    │   ├── PortfolioService.java
+    │   ├── TransactionService.java
+    │   └── UserService.java
+    └── BuddingShareMarketApplication.java
 
 frontend/
 ├── public/
-│   └── index.html
 ├── src/
 │   ├── components/
-│   │   └── NavigationBar.js
+│   │   └── NavigationBar.jsx
 │   ├── pages/
-│   │   ├── Dashboard.js
-│   │   ├── Login.js
-│   │   └── Registration.js
+│   │   ├── Dashboard.jsx
+│   │   ├── Home.jsx
+│   │   ├── Leaderboard.jsx
+│   │   ├── Login.jsx
+│   │   ├── Market.jsx
+│   │   ├── Portfolio.jsx
+│   │   ├── Profile.jsx
+│   │   ├── Registration.jsx
+│   │   └── Transactions.jsx
 │   ├── services/
 │   │   ├── api.js
-│   │   └── AuthContext.js
-│   ├── App.js
-│   ├── index.css
-│   └── index.js
+│   │   └── AuthContext.jsx
+│   └── App.jsx
 └── package.json
 ```
 
 ## ERD Diagram
 <img width="787" height="703" alt="image" src="https://github.com/user-attachments/assets/ff4a3b92-00cd-416f-8feb-95639e5fee1f" />
-
