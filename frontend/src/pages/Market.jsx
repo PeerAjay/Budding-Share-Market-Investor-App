@@ -63,6 +63,10 @@ function Market() {
             await api.post('/stocks/refresh')
             const res = await api.get('/stocks')
             setStocks(res.data || [])
+            if (selAccount) {
+                const hRes = await api.get(`/portfolio/${selAccount}/holdings`)
+                setHoldings(hRes.data || [])
+            }
             setRefreshMsg('Stocks updated successfully.')
             setTimeout(() => setRefreshMsg(''), 3000)
         } catch {
@@ -303,8 +307,18 @@ function Market() {
                                         </div>
                                         <div className="mkt-hrow">
                                             <span className="mkt-hl">PROFIT / LOSS</span>
+                                            <strong className={`mkt-hv${h?.currentPrice != null && h?.averageBuyPrice != null ? ((h.currentPrice - h.averageBuyPrice) >= 0 ? ' mkt-hv--pos' : ' mkt-hv--neg') : ''}`}>
+                                                {h?.currentPrice != null && h?.averageBuyPrice != null ? (() => {
+                                                    const diff = h.currentPrice - h.averageBuyPrice
+                                                    const pct = (diff / h.averageBuyPrice) * 100
+                                                    return `${diff >= 0 ? '+' : ''}${diff.toFixed(2)} (${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%)`
+                                                })() : '—'}
+                                            </strong>
+                                        </div>
+                                        <div className="mkt-hrow">
+                                            <span className="mkt-hl">TOTAL RETURN</span>
                                             <strong className={`mkt-hv${h?.profitLoss != null ? (h.profitLoss >= 0 ? ' mkt-hv--pos' : ' mkt-hv--neg') : ''}`}>
-                                                {h?.profitLoss != null ? `${h.profitLoss >= 0 ? '+' : ''}$${h.profitLoss.toFixed(2)}` : '—'}
+                                                {h?.profitLoss != null ? `${h.profitLoss >= 0 ? '+' : ''}${h.profitLoss.toFixed(2)}` : '—'}
                                             </strong>
                                         </div>
                                     </div>
