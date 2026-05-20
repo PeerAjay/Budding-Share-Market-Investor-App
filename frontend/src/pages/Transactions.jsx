@@ -13,6 +13,8 @@ function Transactions() {
   const [accountsLoading, setAccountsLoading] = useState(true)
   const [transactionsLoading, setTransactionsLoading] = useState(false)
   const [typeFilter, setTypeFilter] = useState('ALL')
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -61,9 +63,23 @@ function Transactions() {
   }
 
   const filteredTransactions = useMemo(() => {
-    if (typeFilter === 'ALL') return transactions
-    return transactions.filter((tx) => tx.type === typeFilter)
-  }, [transactions, typeFilter])
+    let result = typeFilter === 'ALL' ? transactions : transactions.filter((tx) => tx.type === typeFilter)
+
+    if (startDate) {
+      const start = new Date(startDate)
+      start.setHours(0, 0, 0, 0)
+      result = result.filter((tx) => new Date(tx.timestamp) >= start)
+    }
+    if (endDate) {
+      const end = new Date(endDate)
+      end.setHours(23, 59, 59, 999)
+      result = result.filter((tx) => new Date(tx.timestamp) <= end)
+    }
+
+    return result
+  }, [transactions, typeFilter, startDate, endDate])
+
+  const hasDateFilter = !!(startDate || endDate)
 
   const summary = useMemo(() => {
     const totalTrades = filteredTransactions.length
@@ -74,19 +90,36 @@ function Transactions() {
     const buyTrades = filteredTransactions.filter((tx) => tx.type === 'BUY').length
     const sellTrades = filteredTransactions.filter((tx) => tx.type === 'SELL').length
 
-    return {
-      totalTrades,
-      totalBrokerage,
-      buyTrades,
-      sellTrades
-    }
+    return { totalTrades, totalBrokerage, buyTrades, sellTrades }
   }, [filteredTransactions])
+
+  const rangeSummary = useMemo(() => {
+    if (!hasDateFilter) return null
+    const totalBuyValue = filteredTransactions
+      .filter((tx) => tx.type === 'BUY')
+      .reduce((sum, tx) => sum + (tx.totalValue || 0), 0)
+    const totalSellValue = filteredTransactions
+      .filter((tx) => tx.type === 'SELL')
+      .reduce((sum, tx) => sum + (tx.totalValue || 0), 0)
+    const totalBrokerage = filteredTransactions.reduce((sum, tx) => sum + (tx.brokerageFee || 0), 0)
+    const netCashFlow = totalSellValue - totalBuyValue
+    return { totalBuyValue, totalSellValue, totalBrokerage, netCashFlow }
+  }, [filteredTransactions, hasDateFilter])
 
   const formatCurrency = (value) =>
     new Intl.NumberFormat('en-AU', {
       style: 'currency',
       currency: 'AUD'
     }).format(value || 0)
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return ''
+    return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-AU', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    })
+  }
 
   const formatDateTime = (value) => {
     if (!value) return 'N/A'
@@ -142,9 +175,9 @@ function Transactions() {
         ) : (
           <>
             <div className="transactions-card mb-4">
-              <div className="transactions-controls">
-                <div className="transactions-control-group">
-                  <label className="form-label transactions-label">Account</label>
+              <div className="txn-controls-bar">
+                <div className="txn-ctrl-group">
+                  <span className="txn-ctrl-label">Account</span>
                   <select
                     className="form-select transactions-select"
                     value={selectedAccountId}
@@ -158,8 +191,8 @@ function Transactions() {
                   </select>
                 </div>
 
-                <div className="transactions-control-group">
-                  <label className="form-label transactions-label">Filter</label>
+                <div className="txn-ctrl-group">
+                  <span className="txn-ctrl-label">Filter</span>
                   <select
                     className="form-select transactions-select"
                     value={typeFilter}
@@ -169,6 +202,32 @@ function Transactions() {
                     <option value="BUY">Buy</option>
                     <option value="SELL">Sell</option>
                   </select>
+                </div>
+
+                <div className="txn-ctrl-group txn-ctrl-date">
+                  <span className="txn-ctrl-label">Date Range Filter</span>
+                  <div className="txn-date-row">
+                    <div className="txn-date-field">
+                      <span className="txn-date-prefix">FROM</span>
+                      <input
+                        type="date"
+                        className="txn-date-input"
+                        value={startDate}
+                        max={endDate || undefined}
+                        onChange={(e) => setStartDate(e.target.value)}
+                      />
+                    </div>
+                    <div className="txn-date-field">
+                      <span className="txn-date-prefix">TO</span>
+                      <input
+                        type="date"
+                        className="txn-date-input"
+                        value={endDate}
+                        min={startDate || undefined}
+                        onChange={(e) => setEndDate(e.target.value)}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -208,6 +267,53 @@ function Transactions() {
                 </div>
               </div>
             </div>
+
+            {rangeSummary && (
+              <div className="range-summary-panel mb-4">
+                <div className="range-summary-header">
+                  <span className="range-summary-title">Date Range Summary</span>
+                  <span className="range-summary-dates">
+                    {startDate && endDate
+                      ? `${formatDate(startDate)} – ${formatDate(endDate)}`
+                      : startDate
+                        ? `From ${formatDate(startDate)}`
+                        : `Up to ${formatDate(endDate)}`}
+                  </span>
+                </div>
+                <div className="row g-3 mt-1">
+                  <div className="col-6 col-xl-3">
+                    <div className="range-stat-card">
+                      <p className="range-stat-label">Total Invested</p>
+                      <h4 className="range-stat-value range-buy">{formatCurrency(rangeSummary.totalBuyValue)}</h4>
+                      <span className="range-stat-note">Spent on buys</span>
+                    </div>
+                  </div>
+                  <div className="col-6 col-xl-3">
+                    <div className="range-stat-card">
+                      <p className="range-stat-label">Total Received</p>
+                      <h4 className="range-stat-value range-sell">{formatCurrency(rangeSummary.totalSellValue)}</h4>
+                      <span className="range-stat-note">Earned from sells</span>
+                    </div>
+                  </div>
+                  <div className="col-6 col-xl-3">
+                    <div className="range-stat-card">
+                      <p className="range-stat-label">Net Cash Flow</p>
+                      <h4 className={`range-stat-value ${rangeSummary.netCashFlow >= 0 ? 'range-sell' : 'range-buy'}`}>
+                        {rangeSummary.netCashFlow >= 0 ? '+' : ''}{formatCurrency(rangeSummary.netCashFlow)}
+                      </h4>
+                      <span className="range-stat-note">Sells minus buys</span>
+                    </div>
+                  </div>
+                  <div className="col-6 col-xl-3">
+                    <div className="range-stat-card">
+                      <p className="range-stat-label">Brokerage Paid</p>
+                      <h4 className="range-stat-value range-neutral">{formatCurrency(rangeSummary.totalBrokerage)}</h4>
+                      <span className="range-stat-note">Fees in range</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="transactions-card">
               <div className="transactions-section-header">
