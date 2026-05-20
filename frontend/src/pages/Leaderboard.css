@@ -86,6 +86,45 @@
   line-height: 1.6;
 }
 
+.your-rank-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.your-rank-card__left {
+  flex: 1;
+}
+
+.your-rank-card__right {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.your-rank-box {
+  min-width: 180px;
+  padding: 1rem 1.1rem;
+  border-radius: 18px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.your-rank-box__label {
+  display: block;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.your-rank-box__value {
+  color: #0f172a;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
 .podium-card {
   text-align: center;
   padding-top: 2rem;
@@ -155,6 +194,21 @@
   font-weight: 700;
 }
 
+.leaderboard-refresh-btn {
+  border: none;
+  border-radius: 14px;
+  padding: 0.8rem 1rem;
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
+  color: #ffffff;
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.leaderboard-refresh-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.22);
+}
+
 .leaderboard-table thead th {
   color: #64748b;
   font-weight: 700;
@@ -165,6 +219,10 @@
 .leaderboard-table tbody td {
   color: #0f172a;
   border-color: #eef2f7;
+}
+
+.leaderboard-row--current {
+  background: rgba(79, 70, 229, 0.05);
 }
 
 .leaderboard-rank-pill {
@@ -186,6 +244,18 @@
   gap: 0.85rem;
 }
 
+.leaderboard-user-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.leaderboard-current-user-tag {
+  color: #4f46e5;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-top: 0.1rem;
+}
+
 .leaderboard-value {
   font-weight: 800;
   color: #16a34a !important;
@@ -202,7 +272,8 @@
 }
 
 @media (max-width: 992px) {
-  .leaderboard-hero {
+  .leaderboard-hero,
+  .your-rank-card {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -210,10 +281,26 @@
   .leaderboard-badge {
     min-width: unset;
   }
+
+  .your-rank-card__right {
+    width: 100%;
+  }
 }
 
 @media (max-width: 768px) {
   .leaderboard-title {
     font-size: 1.9rem;
+  }
+
+  .leaderboard-section-header {
+    flex-direction: column;
+  }
+
+  .your-rank-box {
+    width: 100%;
+  }
+
+  .leaderboard-refresh-btn {
+    width: 100%;
   }
 }
