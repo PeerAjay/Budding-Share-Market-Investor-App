@@ -8,6 +8,7 @@ import Portfolio from "./pages/Portfolio";
 import Market from "./pages/Market";
 import Transactions from "./pages/Transactions";
 import Leaderboard from "./pages/Leaderboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import NavigationBar from "./components/NavigationBar";
 import { useAuth } from "./services/AuthContext";
 import "./App.css";
@@ -84,6 +85,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Leaderboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
             </ProtectedRoute>
           }
         />

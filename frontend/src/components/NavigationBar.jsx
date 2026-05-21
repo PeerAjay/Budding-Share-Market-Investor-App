@@ -82,6 +82,13 @@ function NavigationBar({ user, onLogout }) {
           >
             Leaderboard
           </NavLink>
+          <NavLink
+            to="/admin"
+            className={getLinkClass}
+            onClick={handleCloseMenu}
+          >
+            Admin
+          </NavLink>
 
           <NavLink
             to="/profile"
