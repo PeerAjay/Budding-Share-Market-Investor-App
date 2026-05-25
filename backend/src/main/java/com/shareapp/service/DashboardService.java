@@ -35,6 +35,17 @@ public class DashboardService {
                 .collect(Collectors.toList());
     }
 
+    public List<TradingAccountResponseDTO> getAllTradingAccounts() {
+        return tradingAccountRepository.findAll().stream()
+                .map(account -> new TradingAccountResponseDTO(
+                        account.getId(),
+                        account.getAccountName(),
+                        account.getBalance(),
+                        account.getCreatedAt()
+                ))
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public TradingAccountResponseDTO openTradingAccount(String email, TradingAccountRequestDTO requestDTO) {
         User user = userRepository.findByEmail(email);

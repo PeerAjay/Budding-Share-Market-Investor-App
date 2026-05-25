@@ -23,14 +23,12 @@ public class LeaderboardController {
     @GetMapping
     public ResponseEntity<LeaderboardResponseDTO> getLeaderboard(Authentication authentication) {
         try {
-            String username = authentication.getName();
-            Long userId = userRepository.findByUsername(username).getId();
+            String email = authentication.getName();
+            Long userId = userRepository.findByEmail(email).getId();
             return ResponseEntity.ok(leaderboardService.getLeaderboard(userId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
-
-        
     }
 
 }

@@ -21,8 +21,12 @@ public class DashboardController {
 
     @GetMapping("/accounts")
     public ResponseEntity<List<TradingAccountResponseDTO>> getTradingAccounts(Authentication authentication) {
-        String email = authentication.getName();
-        return ResponseEntity.ok(dashboardService.getTradingAccounts(email));
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || a.getAuthority().equals("ADMIN"));
+        if (isAdmin) {
+            return ResponseEntity.ok(dashboardService.getAllTradingAccounts());
+        }
+        return ResponseEntity.ok(dashboardService.getTradingAccounts(authentication.getName()));
     }
 
     @PostMapping("/accounts")
