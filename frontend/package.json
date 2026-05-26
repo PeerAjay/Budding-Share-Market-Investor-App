@@ -7,11 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "start": "serve -s dist -l 3000"
+    "preview": "vite preview"
   },
   "dependencies": {
-    "serve": "^14.2.4",
     "axios": "^1.15.1",
     "bootstrap": "^5.3.8",
     "react": "^19.2.5",
