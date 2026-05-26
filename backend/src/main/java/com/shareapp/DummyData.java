@@ -52,9 +52,9 @@ public class DummyData implements CommandLineRunner{
     }
 
     private void seedUsers() {
-        createUserIfNotExists("john", "john@example.com", "password123", "USER");
-        createUserIfNotExists("jane", "jane@example.com", "password123", "USER");
-        createUserIfNotExists("admin", "admin@example.com", "admin123", "ADMIN");
+        createUserIfNotExists("john", "john@example.com", "password123", "ROLE_USER");
+        createUserIfNotExists("jane", "jane@example.com", "password123", "ROLE_USER");
+        createUserIfNotExists("admin", "admin@example.com", "admin123", "ROLE_ADMIN");
     }
 
     private void createUserIfNotExists(String username, String email, String rawPassword, String role) {

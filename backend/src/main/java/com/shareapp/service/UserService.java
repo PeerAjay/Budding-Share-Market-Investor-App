@@ -56,6 +56,7 @@ public class UserService implements UserDetailsService {
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
                 .authorities(user.getRole())
+                .accountLocked(user.isBanned())
                 .build();
     }
 

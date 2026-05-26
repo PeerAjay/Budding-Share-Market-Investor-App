@@ -14,6 +14,8 @@ public class User {
     private String email;
     private String password;
     private String role = "ROLE_USER";
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean banned = false;
     private LocalDateTime createdAt;
 
     @PrePersist
@@ -42,6 +44,14 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public boolean isBanned() {
+        return banned;
+    }
+
+    public void setBanned(boolean banned) {
+        this.banned = banned;
     }
 
     public void setUsername(String username) {
