@@ -19,6 +19,31 @@ A simulated share market investment app where users can create trading accounts,
 - Database: PostgreSQL
 - Stock price data: [EODHD API](https://eodhd.com)
 
+## Live Demo
+
+The app is deployed and accessible at:
+
+**Frontend:** https://budding-share-investor.up.railway.app
+
+**Default admin credentials:** `admin@example.com` / `admin123`
+
+**Default user credentials:** `john@example.com` / `password123`
+
+### Loading stock data on the live app
+
+Stock prices are updated automatically daily at 2:55 AM Sydney time. To load stocks immediately (e.g. for assessment), any logged-in user can click **Refresh Stocks** on the stock market dashboard, or run:
+
+```bash
+# 1. Get a token
+curl -X POST "https://cosc2408-budding-share-market-investor-app-production.up.railway.app/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "john@example.com", "password": "password123"}'
+
+# 2. Refresh stocks (replace <token> with the token from step 1)
+curl -X POST "https://cosc2408-budding-share-market-investor-app-production.up.railway.app/api/stocks/refresh" \
+  -H "Authorization: Bearer <token>"
+```
+
 ## Installation
 
 ### Prerequisites
@@ -125,31 +150,6 @@ npm install
 npm run dev
 ```
 Open the localhost link shown in the terminal.
-
-## Live Demo
-
-The app is deployed and accessible at:
-
-**Frontend:** https://budding-share-investor.up.railway.app
-
-**Default admin credentials:** `admin@example.com` / `admin123`
-
-**Default user credentials:** `john@example.com` / `password123`
-
-### Loading stock data on the live app
-
-Stock prices are updated automatically daily at 2:55 AM Sydney time. To load stocks immediately (e.g. for assessment), any logged-in user can click **Refresh Stocks** on the stock market dashboard, or run:
-
-```bash
-# 1. Get a token
-curl -X POST "https://cosc2408-budding-share-market-investor-app-production.up.railway.app/api/auth/login" \
-  -H "Content-Type: application/json" \
-  -d '{"email": "john@example.com", "password": "password123"}'
-
-# 2. Refresh stocks (replace <token> with the token from step 1)
-curl -X POST "https://cosc2408-budding-share-market-investor-app-production.up.railway.app/api/stocks/refresh" \
-  -H "Authorization: Bearer <token>"
-```
 
 ## Folder Structure 
 
