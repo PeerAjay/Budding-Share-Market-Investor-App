@@ -152,6 +152,19 @@
   box-shadow: none;
 }
 
+.admin-btn--danger {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+.admin-btn--danger:hover {
+  box-shadow: 0 10px 20px rgba(185, 28, 28, 0.22);
+}
+
+.admin-btn--small {
+  padding: 0.65rem 0.85rem;
+  font-size: 0.86rem;
+}
+
 .admin-note-box {
   background: #f8fafc;
   border-radius: 18px;
@@ -226,6 +239,58 @@
 .admin-table tbody td {
   color: #0f172a;
   border-color: #eef2f7;
+}
+
+.admin-user-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-user-cell strong {
+  color: #0f172a;
+}
+
+.admin-user-cell span {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.admin-role-pill,
+.admin-status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 74px;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.admin-role-pill {
+  background: rgba(79, 70, 229, 0.1);
+  color: #4338ca;
+}
+
+.admin-role-pill--admin {
+  background: rgba(234, 179, 8, 0.14);
+  color: #a16207;
+}
+
+.admin-status-pill--active {
+  background: rgba(22, 163, 74, 0.12);
+  color: #15803d;
+}
+
+.admin-status-pill--banned {
+  background: rgba(220, 38, 38, 0.12);
+  color: #b91c1c;
+}
+
+.admin-action-buttons {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
 }
 
 .admin-highlight {
@@ -331,5 +396,13 @@
 
   .admin-transaction-meta {
     text-align: left;
+  }
+
+  .admin-action-buttons {
+    width: 100%;
+  }
+
+  .admin-btn--small {
+    width: 100%;
   }
 }
