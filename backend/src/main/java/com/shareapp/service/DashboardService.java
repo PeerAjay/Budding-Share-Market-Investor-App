@@ -41,7 +41,8 @@ public class DashboardService {
                         account.getId(),
                         account.getAccountName(),
                         account.getBalance(),
-                        account.getCreatedAt()
+                        account.getCreatedAt(),
+                        account.getUser() != null ? account.getUser().getEmail() : null
                 ))
                 .collect(Collectors.toList());
     }

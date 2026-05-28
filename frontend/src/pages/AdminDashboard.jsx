@@ -10,6 +10,7 @@ function AdminDashboard() {
   const [leaderboard, setLeaderboard] = useState([])
   const [accounts, setAccounts] = useState([])
   const [transactions, setTransactions] = useState([])
+  const [selectedUserId, setSelectedUserId] = useState('')
   const [selectedAccountId, setSelectedAccountId] = useState('')
   const [loading, setLoading] = useState(true)
   const [transactionsLoading, setTransactionsLoading] = useState(false)
@@ -30,7 +31,6 @@ function AdminDashboard() {
       setTransactions([])
     }
   }, [selectedAccountId])
-
   const fetchAdminData = async () => {
     setLoading(true)
     setError('')
@@ -75,16 +75,6 @@ function AdminDashboard() {
     if (accountsRes.status === 'fulfilled') {
       const accountsData = accountsRes.value.data || []
       setAccounts(accountsData)
-
-      if (accountsData.length > 0) {
-        setSelectedAccountId((prev) =>
-          prev && accountsData.some((account) => String(account.id) === String(prev))
-            ? prev
-            : String(accountsData[0].id)
-        )
-      } else {
-        setSelectedAccountId('')
-      }
     } else {
       nextWarnings.push('Trading account data could not be loaded.')
       setAccounts([])
@@ -199,9 +189,16 @@ function AdminDashboard() {
     }
   }
 
+  const filteredAccounts = useMemo(() => {
+    if (!selectedUserId) return accounts
+    const user = users.find((u) => String(u.id) === String(selectedUserId))
+    if (!user) return accounts
+    return accounts.filter((a) => a.ownerEmail === user.email)
+  }, [accounts, users, selectedUserId])
+
   const selectedAccount = useMemo(() => {
-    return accounts.find((account) => String(account.id) === String(selectedAccountId)) || null
-  }, [accounts, selectedAccountId])
+    return filteredAccounts.find((account) => String(account.id) === String(selectedAccountId)) || null
+  }, [filteredAccounts, selectedAccountId])
 
   const totalUsers = users.length
   const bannedUsers = users.filter((user) => user.banned).length
@@ -385,8 +382,8 @@ function AdminDashboard() {
                                     {actionLoadingKey === `user-${user.id}`
                                       ? 'Updating...'
                                       : user.banned
-                                      ? 'Unban'
-                                      : 'Ban'}
+                                        ? 'Unban'
+                                        : 'Ban'}
                                   </button>
 
                                   <button
@@ -563,15 +560,38 @@ function AdminDashboard() {
                     </div>
                   </div>
 
-                  {accounts.length > 0 && (
+                  {users.length > 0 && (
                     <div className="mb-3">
-                      <label className="form-label admin-label">Select account</label>
+                      <label className="form-label admin-label">Select user</label>
+                      <select
+                        className="form-select admin-select"
+                        value={selectedUserId}
+                        onChange={(e) => {
+                          setSelectedUserId(e.target.value)
+                          setSelectedAccountId('')
+                          setTransactions([])
+                        }}
+                      >
+                        <option value="">All users</option>
+                        {users.filter((u) => u.role !== 'ROLE_ADMIN').map((user) => (
+                          <option key={user.id} value={user.id}>
+                            {user.username} ({user.email})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {filteredAccounts.length > 0 && (
+                    <div className="mb-3">
+                      <label className="form-label admin-label">Select trading account</label>
                       <select
                         className="form-select admin-select"
                         value={selectedAccountId}
                         onChange={(e) => setSelectedAccountId(e.target.value)}
                       >
-                        {accounts.map((account) => (
+                        <option value="">-- Choose an account --</option>
+                        {filteredAccounts.map((account) => (
                           <option key={account.id} value={account.id}>
                             {account.accountName} - #{account.id}
                           </option>
