@@ -130,7 +130,6 @@ class TransactionServiceTest {
         when(holdingRepository.findByAccountAndStock(account, stock)).thenReturn(holding);
         when(stockPriceHistoryRepository.findTopByStockSymbolOrderByTimestampDesc("AAPL"))
                 .thenReturn(priceHistory);
-        when(priceHistory.getPrice()).thenReturn(100.0);
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             transactionService.sellShare(1L, "AAPL", 3);
