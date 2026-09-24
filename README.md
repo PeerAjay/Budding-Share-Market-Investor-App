@@ -1,15 +1,18 @@
 # COSC2408 Budding Share Market Investor App 
-COSC2408 Semester 1 2026 | VS666 | Budding Share Market Investor App 
 
 ## About 
 A simulated share market investment app where users can create trading accounts, buy and sell stocks using live market data, track their portfolio performance, and compete on a leaderboard.
 
+I worked together with my fellow students to complete this capstone project as a team, mimicking a real world development scenario. As a team we conducting weekly client and team meetings, recording them in minutes, we allocated tasks and managed the development process through scrum sprints in Trello, and wrote all relevant documentation.
+
+My technical role on this project was as a back-end developer, working on the implementation of the buying/selling shares feature, share price tracking, transaction history and leaderboard features.
+
 ## Members
-- Ajay Peeris: S4088958@student.rmit.edu.au
-- Devon Katsuk: S3844510@student.rmit.edu.au
-- Ninh Duy Huynh: S4003174@student.rmit.edu.au
-- Theresa Ngo: S3854837@student.rmit.edu.au
-- Zhoutong Chen: S4007490@student.rmit.edu.au
+- Ajay Peeris (Me)
+- Devon Katsuk
+- Ninh Duy Huynh
+- Theresa Ngo
+- Zhoutong Chen
 
 ## Tech Stack
 ### Frontend 
