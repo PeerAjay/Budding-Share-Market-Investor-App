@@ -1,4 +1,4 @@
-#Budding Share Market Investor App 
+# Budding Share Market Investor App 
 
 ## About 
 A simulated share market investment app where users can create trading accounts, buy and sell stocks using live market data, track their portfolio performance, and compete on a leaderboard.
